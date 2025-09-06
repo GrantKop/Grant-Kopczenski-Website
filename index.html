@@ -5,25 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Grant Kopczenski | Project Portfolio</title>
 
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <!-- External CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body id="home">
 
-  <!-- Hero Section -->
   <header>
     <h1>Grant Kopczenski</h1>
     <p>Software Developer | Project Portfolio</p>
     <div class="hero-buttons">
       <a href="#projects" class="cta-btn">See My Work</a>
-      <a href="#contact" class="cta-btn secondary-btn">Contact Me</a>
+      <a href="#contact" class="cta-btn">Contact Me</a>
     </div>
   </header>
 
-  <!-- Projects Section -->
   <section class="projects" id="projects">
     <h2>My Projects</h2>
     <div class="projects-grid">
@@ -36,15 +33,31 @@
     </div>
   </section>
 
-  <!-- Contact Section -->
   <section class="contact" id="contact">
-    <h2>Contact Me</h2>
-    <a href="mailto:grant.kop9@gmail.com">Email</a>
-    <a href="https://github.com/GrantKop" target="_blank">GitHub</a>
-    <a href="https://www.linkedin.com/in/grant-kopczenski/" target="_blank">LinkedIn</a>
+    <h2 class="contact-title">My Socials</h2>
+    <div class="icon-buttons">
+      <a href="mailto:grant.kop9@gmail.com" title="Gmail"><i class="fas fa-envelope"></i></a>
+      <a href="https://github.com/GrantKop" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+      <a href="https://www.linkedin.com/in/grant-kopczenski/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+      <a href="https://discord.com/users/private_boi" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+      <a href="https://www.instagram.com/grant.kopczenski/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+    </div>
   </section>
 
-  <!-- Footer -->
+  <a href="#home" id="back-to-top">&#8679;</a>
+
+  <script>
+    const backToTop = document.getElementById("back-to-top");
+
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 85) {
+        backToTop.style.display = "block";
+      } else {
+        backToTop.style.display = "none";
+      }
+    });
+  </script>
+
   <footer>
     &copy; 2025 Grant Kopczenski. All rights reserved.
   </footer>
