@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TerraLink | Grant Kopczenski</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>TerraLink</h1>
+    <p>Real-time procedural terrain generator built with OpenGL</p>
+  </header>
+
+  <section class="project-section">
+    <h2>Project Overview</h2>
+    <p>TerraLink generates dynamic landscapes using Perlin Noise. It currently supports singleplayer gameplay, terrain manipulation, and player physics. It also includes a lightweight UDP/TCP networking system for streaming terrain data between clients and dedicated servers.</p>
+  </section>
+
+  <section class="project-section">
+    <h2>Screenshots</h2>
+    <div class="project-images">
+      <img src="../../images/terra_link_project.png" alt="House" class="popup-img">
+      <img src="images/terralink_desert.png" alt="Desert Biome" class="popup-img">
+      <img src="images/terralink_mountain.png" alt="Mountain" class="popup-img">
+      <img src="images/terralink_select_block.png" alt="Block Outline" class="popup-img">
+      <img src="images/terralink_blocks.png" alt="Blocks" class="popup-img">
+      <img src="images/terralink_underground_room.png" alt="Underground Room" class="popup-img">
+      <img src="images/terralink_mountain_gen.png" alt="Mountain Generation" class="popup-img">
+      <img src="images/terralink_biomes.png" alt="Biomes Intersect" class="popup-img">
+    </div>
+  </section>
+
+  <div id="image-popup">
+    <div class="popup-container">
+      <span class="popup-arrow left">&#10094;</span>
+      <img id="popup-image" src="" alt="">
+      <span class="popup-arrow right">&#10095;</span>
+      <span class="popup-title"></span>
+      <span class="popup-close">&times;</span>
+    </div>
+  </div>
+
+  <script>
+    const images = document.querySelectorAll('.project-images img');
+    const popup = document.getElementById('image-popup');
+    const popupImg = document.getElementById('popup-image');
+    const popupTitle = document.querySelector('.popup-title');
+    const closeBtn = document.querySelector('.popup-close');
+    const leftArrow = document.querySelector('.popup-arrow.left');
+    const rightArrow = document.querySelector('.popup-arrow.right');
+
+    let currentIndex = 0;
+
+    images.forEach((img, i) => {
+      img.addEventListener('click', () => {
+        currentIndex = i;
+        showPopup();
+      });
+    });
+
+    function showPopup() {
+      const img = images[currentIndex];
+      popupImg.src = img.src;
+      popupImg.alt = img.alt;
+      popupTitle.textContent = img.alt;
+      popup.style.display = 'flex';
+    }
+
+    closeBtn.addEventListener('click', () => {
+      popup.style.display = 'none';
+    });
+
+    leftArrow.addEventListener('click', (e) => {
+      e.stopPropagation();
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+      showPopup();
+    });
+
+    rightArrow.addEventListener('click', (e) => {
+      e.stopPropagation();
+      currentIndex = (currentIndex + 1) % images.length;
+      showPopup();
+    });
+
+    popup.addEventListener('click', e => {
+      if(e.target === popup) popup.style.display = 'none';
+    });
+  </script>
+
+  <section class="project-section project-links">
+    <h2>Project Links</h2>
+    <a href="https://github.com/GrantKop/TerraLink" target="_blank">GitHub Repo</a>
+    <a href="https://github.com/GrantKop/TerraLink/wiki" target="_blank">Wiki</a>
+  </section>
+
+  <a href="../../#projects" class="back-btn">← Back to Portfolio</a>
+
+  <footer>
+    &copy; 2025 Grant Kopczenski. All rights reserved.
+  </footer>
+
+</body>
+</html>

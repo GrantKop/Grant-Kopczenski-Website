@@ -14,22 +14,33 @@
 
   <header>
     <h1>Grant Kopczenski</h1>
-    <p>Software Developer | Project Portfolio</p>
+    <p>Software Developer | Project Portfolio | WIP</p>
     <div class="hero-buttons">
-      <a href="#projects" class="cta-btn">See My Work</a>
-      <a href="#contact" class="cta-btn">Contact Me</a>
+      <a data-target="projects" class="cta-btn">See My Work</a>
+      <a data-target="contact" class="cta-btn">Contact Me</a>
     </div>
   </header>
+
+  <script>
+    document.querySelectorAll('.cta-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const targetId = button.getAttribute('data-target');
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
 
   <section class="projects" id="projects">
     <h2>My Projects</h2>
     <div class="projects-grid">
-      <div class="project-card">
+      <a href="projects/terralink" class="project-card">
         <img src="images/terra_link_project.png" alt="TerraLink">
         <h3>TerraLink</h3>
-        <p>temp desc</p>
-        <a>GitHub: </a><a href="https://github.com/GrantKop/TerraLink" target="_blank"> Repo </a> <a> | </a> <a href="https://github.com/GrantKop/TerraLink/wiki" target="_blank">Wiki</a>
-      </div>
+        <p>TerraLink is a real-time procedural terrain generator built with OpenGL, featuring dynamic landscapes generated using Perlin Noise. It currently supports singleplayer gameplay, including terrain manipulation and player physics, and includes a lightweight UDP/TCP networking system for streaming terrain data between clients and dedicated servers.</p>
+      </a>
     </div>
   </section>
 
@@ -44,7 +55,7 @@
     </div>
   </section>
 
-  <a href="#home" id="back-to-top">&#8679;</a>
+  <a id="back-to-top">&#8679;</a>
 
   <script>
     const backToTop = document.getElementById("back-to-top");
@@ -55,6 +66,14 @@
       } else {
         backToTop.style.display = "none";
       }
+    });
+
+    backToTop.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     });
   </script>
 
