@@ -1,0 +1,60 @@
+/* Reset & base */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Roboto', sans-serif; line-height: 1.6; background: #daf7dc; color: #333; }
+a { color: inherit; text-decoration: none; }
+
+
+/* Contact */
+section.contact {
+  padding: 20px 20px; 
+  text-align: center; 
+  background: #2f4858;
+  color: #fff;
+}
+section.contact h2 { margin-bottom: 20px; }
+.icon-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.contact-title {
+  font-size: 2.1rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.icon-buttons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px; 
+  height: 60px;
+  background: #9ee493;
+  color: #333;
+  border-radius: 8px;
+  font-size: 1.6rem;
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+.icon-buttons a:hover {
+  transform: scale(1.1);
+  background: #daf7dc;
+}
+
+footer { text-align: center; 
+    padding: 20px; 
+    font-size: 0.9rem; 
+    color: #2f4858; 
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scrollbar */
+/* Target whole page scrollbars */
+html, body {
+  scrollbar-width: thin;
+  scrollbar-color: #9ee493 #2f4858;
+}
