@@ -1,15 +1,59 @@
+:root {
+  --gk-primary1: #336699;
+  --gk-primary2: #86bbd8;
+  --gk-primary3: #2f4858;
+  --gk-secondary1: #9ee493;
+  --gk-secondary2: #daf7dc;
+  --gk-white: #fff;
+  --gk-gray: #333;
+}
+
 /* Reset & base */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Roboto', sans-serif; line-height: 1.6; background: #daf7dc; color: #333; }
+body { font-family: 'Roboto', sans-serif; line-height: 1.6; background: var(--gk-secondary2); color: var(--gk-gray); }
 a { color: inherit; text-decoration: none; }
 
+/* Header */
+gkheader {
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center;
+  text-align: center;
+  height: 100dvh; 
+  background: linear-gradient(135deg, var(--gk-primary2), var(--gk-primary1));
+  color: var(--gk-white); 
+  padding: 0 20px;
+}
+gkheader h1 {
+  font-size: clamp(1.8rem, 6vw, 3rem);
+  margin-bottom: 0.5rem;
+}
+gkheader p {
+  font-size: 1.3rem;
+  margin-bottom: 2rem;
+}
+
+gkheader .cta-btn {
+  padding: 0.8rem 2rem;
+  background: var(--gk-secondary1);
+  color: var(--gk-gray);
+  border-radius: 5px; 
+  font-weight: bold; 
+  transition: transform 0.2s;
+}
+gkheader .cta-btn:hover { 
+    transform: scale(1.05);
+    background: var(--gk-secondary2);
+    cursor: pointer;
+}
 
 /* Contact */
 section.contact {
-  padding: 20px 20px; 
-  text-align: center; 
-  background: #2f4858;
-  color: #fff;
+  padding: 20px 20px;
+  text-align: center;
+  background: var(--gk-primary3);
+  color: var(--gk-white);
 }
 section.contact h2 { margin-bottom: 20px; }
 .icon-buttons {
@@ -23,15 +67,14 @@ section.contact h2 { margin-bottom: 20px; }
   text-align: center;
   font-weight: bold;
 }
-
 .icon-buttons a {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 60px; 
   height: 60px;
-  background: #9ee493;
-  color: #333;
+  background: var(--gk-secondary1);
+  color: var(--gk-gray);
   border-radius: 8px;
   font-size: 1.6rem;
   text-decoration: none;
@@ -39,13 +82,19 @@ section.contact h2 { margin-bottom: 20px; }
 }
 .icon-buttons a:hover {
   transform: scale(1.1);
-  background: #daf7dc;
+  background: var(--gk-secondary2);
 }
 
 footer { text-align: center; 
     padding: 20px; 
     font-size: 0.9rem; 
-    color: #2f4858; 
+    color: var(--gk-primary3); 
+}
+
+/* Responsive */
+@media(max-width: 600px){
+  header h1 { font-size: 2.2rem; }
+  header p { font-size: 1rem; }
 }
 
 html {
@@ -56,5 +105,5 @@ html {
 /* Target whole page scrollbars */
 html, body {
   scrollbar-width: thin;
-  scrollbar-color: #9ee493 #2f4858;
+  scrollbar-color: var(--gk-secondary1) var(--gk-primary3);
 }

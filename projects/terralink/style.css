@@ -6,8 +6,8 @@ header {
   align-items: center;
   text-align: center;
   height: 60vh;
-  background: linear-gradient(135deg, #86bbd8, #336699);
-  color: white;
+  background: linear-gradient(135deg, var(--gk-primary2),  var(--gk-primary1));
+  color: var(--gk-white);
   padding: 0 20px;
 }
 header h1 { font-size: 3rem; margin-bottom: 0.5rem; }
@@ -27,7 +27,7 @@ header p { font-size: 1.3rem; margin-bottom: 2rem; }
 .project-section p {
   font-size: 1rem;
   line-height: 1.6;
-  color: #555;
+  color: var(--gk-gray);
   margin-bottom: 20px;
 }
 
@@ -79,7 +79,7 @@ header p { font-size: 1.3rem; margin-bottom: 2rem; }
 
 .popup-title, .popup-close {
   position: absolute;
-  color: #fff;
+  color: var(--gk-white);
   font-weight: bold;
   opacity: 0;
   transition: opacity 0.2s;
@@ -131,8 +131,8 @@ header p { font-size: 1.3rem; margin-bottom: 2rem; }
 }
 .project-links a {
   display: inline-block;
-  background: #9ee493;
-  color: #333;
+  background: var(--gk-secondary1);
+  color: var(--gk-gray);
   padding: 0.8rem 1.5rem;
   border-radius: 5px;
   font-weight: bold;
@@ -141,7 +141,7 @@ header p { font-size: 1.3rem; margin-bottom: 2rem; }
   text-decoration: none;
 }
 .project-links a:hover {
-  background: #daf7dc;
+  background: var(--gk-secondary2);
   transform: scale(1.05);
   cursor: pointer;
 }
@@ -152,8 +152,8 @@ header p { font-size: 1.3rem; margin-bottom: 2rem; }
   max-width: 200px;
   margin: 0 auto 60px;
   text-align: center;
-  background: #9ee493;
-  color: #333;
+  background: var(--gk-secondary1);
+  color: var(--gk-gray);
   padding: 0.8rem 1.5rem;
   border-radius: 5px;
   font-weight: bold;
@@ -162,22 +162,5 @@ header p { font-size: 1.3rem; margin-bottom: 2rem; }
 }
 .back-btn:hover {
   transform: scale(1.05);
-  background: #daf7dc;
-}
-
-/* Responsive */
-@media(max-width: 600px){
-  header h1 { font-size: 2.2rem; }
-  header p { font-size: 1rem; }
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-/* Scrollbar */
-/* Target whole page scrollbars */
-html, body {
-  scrollbar-width: thin;
-  scrollbar-color: #9ee493 #2f4858;
+  background: var(--gk-secondary2);
 }
