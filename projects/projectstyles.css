@@ -5,13 +5,40 @@ header {
   justify-content: center; 
   align-items: center;
   text-align: center;
-  height: 60vh;
+  height: 60dvh;
   background: linear-gradient(135deg, var(--gk-primary2),  var(--gk-primary1));
   color: var(--gk-white);
   padding: 0 20px;
 }
-header h1 { font-size: 3rem; margin-bottom: 0.5rem; }
-header p { font-size: 1.3rem; margin-bottom: 2rem; }
+header h1 {
+  font-size: clamp(1.8rem, 6vw, 3.25rem);
+  margin-bottom: -.9rem;
+}
+header p {
+  font-size: 1.35rem;
+  margin-bottom: 1.5rem;
+}
+header a {
+  background: var(--gk-secondary1);
+  color: var(--gk-gray);
+  padding: 0.8rem 2rem;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: transform 0.2s;
+}
+header a:hover {
+  background: var(--gk-secondary2);
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: .75rem;
+}
 
 /* Sections */
 .project-section {
@@ -123,28 +150,6 @@ header p { font-size: 1.3rem; margin-bottom: 2rem; }
 .popup-arrow.right { right: 50px; }
 
 .popup-arrow:hover { color: rgba(255,255,255,1.0); }
-
-/* Project Links */
-.project-links {
-  text-align: center;
-  margin-bottom: 40px;
-}
-.project-links a {
-  display: inline-block;
-  background: var(--gk-secondary1);
-  color: var(--gk-gray);
-  padding: 0.8rem 1.5rem;
-  border-radius: 5px;
-  font-weight: bold;
-  margin: 0 10px;
-  transition: transform 0.2s;
-  text-decoration: none;
-}
-.project-links a:hover {
-  background: var(--gk-secondary2);
-  transform: scale(1.05);
-  cursor: pointer;
-}
 
 /* Back Button */
 .back-btn {

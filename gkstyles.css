@@ -1,3 +1,4 @@
+/* Global Variables */
 :root {
   --gk-primary1: #336699;
   --gk-primary2: #86bbd8;
@@ -15,23 +16,23 @@ a { color: inherit; text-decoration: none; }
 
 /* Header */
 gkheader {
-  display: flex; 
-  flex-direction: column; 
-  justify-content: center; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
   text-align: center;
-  height: 100dvh; 
+  height: 100dvh;
   background: linear-gradient(135deg, var(--gk-primary2), var(--gk-primary1));
-  color: var(--gk-white); 
+  color: var(--gk-white);
   padding: 0 20px;
 }
 gkheader h1 {
-  font-size: clamp(1.8rem, 6vw, 3rem);
-  margin-bottom: 0.5rem;
+  font-size: clamp(1.8rem, 6vw, 3.25rem);
+  margin-bottom: -.9rem;
 }
 gkheader p {
-  font-size: 1.3rem;
-  margin-bottom: 2rem;
+  font-size: 1.35rem;
+  margin-bottom: 1.5rem;
 }
 
 gkheader .cta-btn {
@@ -59,7 +60,7 @@ section.contact h2 { margin-bottom: 20px; }
 .icon-buttons {
     display: flex;
     justify-content: center;
-    gap: 12px;
+    gap: .6rem;
     flex-wrap: wrap;
 }
 .contact-title {
