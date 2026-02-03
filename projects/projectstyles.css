@@ -48,14 +48,20 @@ header a:hover {
 }
 .project-section h2 {
   text-align: center;
-  margin-bottom: 30px;
   font-size: 2rem;
+  margin-bottom: -10px; 
+}
+.project-section h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1rem;
 }
 .project-section p {
   font-size: 1rem;
   line-height: 1.6;
   color: var(--gk-gray);
   margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 /* Images */
@@ -70,6 +76,9 @@ header a:hover {
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   transition: transform 0.2s, box-shadow 0.2s;
+  max-height: 150px;
+  object-fit: cover; 
+  object-position: center;
 }
 .project-images img:hover {
   transform: translateY(-5px);
@@ -167,5 +176,5 @@ header a:hover {
 }
 .back-btn:hover {
   transform: scale(1.05);
-  background: var(--gk-secondary2);
+  background: var(--gk-primary2);
 }
