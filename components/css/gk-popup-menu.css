@@ -263,6 +263,12 @@
     border-color: rgba(255,255,255,0.24);
 }
 
+.gk-popup-menu__btn:active,
+.gk-popup-menu__icons a:active {
+  background: rgba(255,255,255,0.14);
+  border-color: rgba(255,255,255,0.32);
+  transform: translateY(0);
+}
 
 @media (max-width: 720px) {
     :root {
