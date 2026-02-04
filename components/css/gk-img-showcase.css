@@ -1,0 +1,28 @@
+.gk-img-showcase {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+.gk-img-showcase__layer {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 900ms ease;
+  will-change: opacity;
+}
+
+.gk-img-showcase__layer.is-visible {
+  opacity: 1;
+}
+
+.gk-img-showcase__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(1000px 700px at 30% 20%, rgba(0,0,0,.10), rgba(0,0,0,.45));
+}

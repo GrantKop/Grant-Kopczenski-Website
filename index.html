@@ -1,94 +1,54 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Grant Kopczenski | Project Portfolio</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <link rel="stylesheet" href="gkstyles.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/components/css/gk-img-showcase.css">
+  <link rel="stylesheet" href="/components/css/gk-popup-menu.css">
 
+  <title>Grant Kopczenski | Project Portfolio</title>
+  <style>
+    html, body { height: 100%; margin: 0; overflow: hidden; }
+    #bg { position: fixed; inset: 0; z-index: -1; }
+  </style>
 </head>
-<body id="home">
+<body>
+  <div id="bg"></div>
 
-  <gkheader>
-    <h1>Grant Kopczenski</h1>
-    <p>Software Developer | Amature Photographer | 3D Printer</p>
-    <div class="hero-buttons">
-      <a data-target="projects" class="cta-btn">Software Projects</a>
-      <a data-target="" class="cta-btn">Photography</a>
-      <a data-target="" class="cta-btn">3D Prints</a>
-      <a data-target="contact" class="cta-btn">Contact Me</a>
-    </div>
-  </gkheader>
+  <script type="module">
+    import { startShowcase } from "/components/js/gk-image-showcase.js";
 
-  <script>
-    document.querySelectorAll('.cta-btn').forEach(button => {
-      button.addEventListener('click', () => {
-        const targetId = button.getAttribute('data-target');
-        const targetElement = document.getElementById(targetId);
-        if (targetElement) {
-          targetElement.scrollIntoView({ behavior: 'smooth' });
-        }
-      });
+    await startShowcase({
+      parent: document.getElementById("bg"),
+      folder: "images/",
+      intervalMs: 8000,
+      fadeMs: 900,
+      shuffle: true,
+      overlay: true,
     });
   </script>
 
-  <section class="projects" id="projects">
-    <h2>My Software Projects</h2>
-    <h3>Click on a project to learn more</h3>
-    <div class="projects-grid">
-      <a href="projects/terralink" class="project-card">
-        <img src="images/terra_link_project.png" alt="TerraLink">
-        <h3>TerraLink</h3>
-        <p>Real-time procedural terrain generator and editor built with OpenGL, featuring dynamic landscapes generated using Perlin Noise, and online multiplayer.</p>
-      </a>
-      <a href="projects/capstonespacegame" class="project-card">
-        <img src="images/capstone_project.png" alt="Capstone Project">
-        <h3>Capstone Space Flight Simulator</h3>
-        <p>Immersive space flight simulator made with Unreal Engine 5. This was my university capstone project I made with a team.</p>
-      </a>
-    </div>
-  </section>
+  <script type="module">
+  import { mountPopupMenu } from "/components/js/gk-popup-menu.js";
 
-  <section class="contact" id="contact">
-    <h2 class="contact-title">Contact Me</h2>
-    <div class="icon-buttons">
-      <a href="mailto:grant.kop9@gmail.com" title="Gmail"><i class="fas fa-envelope"></i></a>
-      <a href="https://www.instagram.com/grant.kopczenski/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
-      <a href="https://www.linkedin.com/in/grant-kopczenski/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-      <a href="https://github.com/GrantKop" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-      <a href="https://discord.com/users/private_boi" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
-    </div>
-  </section>
-
-  <a id="back-to-top">&#8679;</a>
-
-  <script>
-    const backToTop = document.getElementById("back-to-top");
-
-    window.addEventListener("scroll", () => {
-      if (window.scrollY > 85) {
-        backToTop.style.display = "block";
-      } else {
-        backToTop.style.display = "none";
-      }
-    });
-
-    backToTop.addEventListener("click", (e) => {
-      e.preventDefault();
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
+  mountPopupMenu({
+    delayMs: 900,
+    title: "Grant Kopczenski",
+    subtitle: "Software Developer | Photographer | 3D Printer",
+    subtitleSecondary: "Project Portfolio | Photograph Album",
+    subtitleCycleMs: 8000,
+    buttons: [
+      { label: "Projects", title: "Software Projects" },
+      { label: "Photos", title: "Photo Album" },
+      { label: "3D Prints", title: "3D Designs and Files" },
+    ],
     });
   </script>
-
-  <script src="/components/gk-footer.js" defer></script>
-  <gk-footer></gk-footer>
-
 </body>
+
+  <!-- <script src="/components/js/gk-footer.js" defer></script>
+  <gk-footer></gk-footer> -->
 </html>
