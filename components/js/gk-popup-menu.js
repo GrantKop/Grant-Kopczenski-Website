@@ -74,10 +74,21 @@ export function mountPopupMenu(options = {}) {
         for (const b of btns) {
             const a = document.createElement('a');
             a.className = 'gk-popup-menu__btn' + (b.primary ? ' is-primary' : '');
-            a.href = b.href;
-            a.textContent = b.label;
+            a.href = b.href ?? '#';
+            a.textContent = b.label ?? '';
+
+            if (b.title) a.title = b.title;
+            if (b.ariaLabel) a.setAttribute('aria-label', b.ariaLabel);
+            else if (b.title) a.setAttribute('aria-label', b.title);
+
+            if (b.title != null) {
+              a.setAttribute('title', String(b.title));
+              console.log('set title:', b.label, b.title);
+            }
+
             if (b.target) a.target = b.target;
             if (b.rel) a.rel = b.rel;
+            
             nav.appendChild(a);
         }
     }
@@ -150,16 +161,16 @@ function normalize(opts) {
     const buttons = Array.isArray(opts.buttons) ? opts.buttons : null;
     return {
         delayMs:        typeof opts.delayMs === 'number' ? opts.delayMs : 900,
-        title:          typeof opts.title === 'string' ? opts.title : 'Grant Kopczenski',
-        subtitle:       typeof opts.subtitle === 'string' ? opts.subtitle : 'Software Developer | Photographer | 3D Printer',
-        subtitleSecondary:  typeof opts.subtitleSecondary === 'string' ? opts.subtitleSecondary : 'Project Portfolio',
+        title:          typeof opts.title === 'string' ? opts.title : 'Title',
+        subtitle:       typeof opts.subtitle === 'string' ? opts.subtitle : 'Subtitle Primary',
+        subtitleSecondary:  typeof opts.subtitleSecondary === 'string' ? opts.subtitleSecondary : 'Subtitle Secondary',
         subtitleCycleMs:    typeof opts.subtitleCycleMs === 'number' ? opts.subtitleCycleMs : 8000,
         buttons:        buttons && buttons.length 
             ? buttons
             : [
-                { label: 'Software Projects', href: '' },
-                { label: 'Photography', href: '' },
-                { label: '3D Prints', href: '' },
+                { label: 'Button 1', href: '' },
+                { label: 'Button 2', href: '' },
+                { label: 'Button 3', href: '' },
             ],
         parent: opts.parent,
         className: typeof opts.className === 'string' ? opts.className : 'gk-popup-menu',

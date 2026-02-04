@@ -1,8 +1,8 @@
 :root {
-    --gk-popup-h:       120px;
+    --gk-popup-h:       105px;
     --gk-popup-radius:  20px;
     --gk-popup-bg:      rgba(10, 12, 18, 0.55);
-    --gk-popup-bg-hover:rgba(10, 12, 18, 0.85);
+    --gk-popup-bg-hover:rgba(10, 12, 18, 0.88);
     --gk-popup-border:  rgba(255, 255, 255, 0.14);
     --gk-popup-text:    rgba(255, 255, 255, 0.92);
     --gk-popup-muted:   rgba(255, 255, 255, 0.72);
@@ -15,12 +15,12 @@
     --gk-popup-rise: 15px;
     --gk-popup-h-hover: 160px;
 
-    --gk-popup-left-nudge: 16px;
+    --gk-popup-left-nudge: 22px;
 
     --gk-popup-nav-delay: calc(var(--gk-popup-title-delay));
     --gk-popup-nav-duration: 1500ms;
 
-    --gk-popup-nav-raise: -10px;
+    --gk-popup-nav-raise: -8px;
 
     --gk-popup-btn-scale: 2;
 }
@@ -160,7 +160,7 @@
     justify-content: flex-end;
     flex-wrap: wrap;
 
-    gap: 18px;            /* try 16–28px */
+    gap: 18px;
     row-gap: 14px;
 
     opacity: 0;
@@ -233,23 +233,25 @@
 
 .gk-popup-menu__icons {
     display: flex;
-    gap: 11px;
-    margin-top: 10px;   
+    gap: 12px;
+    margin-top: 4px;   
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(2px);
     transition: opacity 220ms ease, transform 220ms ease;
+    pointer-events: none;
 }
 .gk-popup-menu:hover .gk-popup-menu__icons {
     opacity: 1;
     transform: translateY(0);
+    pointer-events: auto;
 }
 
 .gk-popup-menu__icons a {
     color: var(--gk-popup-text);
     text-decoration: none;
-    font-size: 18px;
+    font-size: 20px;
     line-height: 1;
-    padding: 8px 10px;
+    padding: 10px 12px;
     border-radius: 12px;
     border: 1px solid rgba(255,255,255,0.14);
     background: rgba(255,255,255,0.06);
@@ -271,9 +273,15 @@
         --gk-popup-nav-raise: 0px;
     }
 
+    .gk-popup-menu {
+       height: var(--gk-popup-h-hover);
+       transform: translateY(calc(-1 * var(--gk-popup-rise)));
+    }
+
     .gk-popup-menu__inner {
         align-items: flex-start;
         padding: 12px 14px 34px;
+        background: var(--gk-popup-bg-hover);
     }
 
     .gk-popup-menu__left {
@@ -337,15 +345,25 @@
         line-height: 1.2;
         white-space: normal;
         max-width: none;
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: none;
+    }
+
+    .gk-popup-menu__icons {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
     }
 
     .gk-popup-menu__icons a {
         padding: 8px 10px;
+        font-size: 18px;
     }
 
     .gk-popup-menu__icons {
         margin-top: auto;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
     }
 
     .gk-popup-menu:hover .gk-popup-menu__left {
