@@ -329,11 +329,7 @@ function normalize(opts) {
         subtitleFirstCycleMs: typeof opts.subtitleFirstCycleMs === "number" ? opts.subtitleFirstCycleMs : 4500,
         buttons:        buttons && buttons.length 
             ? buttons
-            : [
-                { label: 'Button 1', href: '' },
-                { label: 'Button 2', href: '' },
-                { label: 'Button 3', href: '' },
-            ],
+            : [],
         parent: opts.parent,
         className: typeof opts.className === 'string' ? opts.className : 'gk-popup-menu',
     };
