@@ -38,13 +38,17 @@
   import { mountPopupMenu } from "../../components/js/gk-popup-menu.js";
 
   mountPopupMenu({
-    delayMs: 400,
+    delayMs: 850,
     title: "Senior Capstone",
     subtitle: "Immersive Physics | Collision Avoidance | Beautiful Environment",
     subtitleSecondary: "C++ | Unreal Engine 5 | Visual Scripting",
     subtitleCycleMs: 8000,
     subtitleFirstCycleMs: 5500,
-    buttons: [],
+    buttons: [
+      { id: "About", label: "About", title: "About the Project", panelId: "capstone_about" },
+      { id: "Images", label: "Images", title: "Project Images", panelId: "capstone_images" },
+      { id: "Return", label: "Return", title: "Return to Home", href: "../../" },
+    ],
     });
   </script>
 </body>

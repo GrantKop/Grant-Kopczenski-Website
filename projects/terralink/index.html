@@ -40,11 +40,15 @@
   mountPopupMenu({
     delayMs: 850,
     title: "TerraLink",
-    subtitle: "Procedural Terrain Generation | UDP Networking",
-    subtitleSecondary: "C | C++ | OpenGL | OpenAL",
+    subtitle: "Procedural Terrain Generation | TCP/UDP Networking",
+    subtitleSecondary: "C++ | OpenGL | OpenAL",
     subtitleCycleMs: 8000,
     subtitleFirstCycleMs: 5500,
-    buttons: [],
+    buttons: [
+      { id: "About", label: "About", title: "About the Project", panelId: "terralink_about" },
+      { id: "Images", label: "Images", title: "Project Images", panelId: "terralink_images" },
+      { id: "Return", label: "Return", title: "Return to Home", href: "../../" },
+    ],
     });
   </script>
 </body>
