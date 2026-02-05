@@ -152,7 +152,7 @@
 .gk-popup-menu__subtitle-wrap {
     position: relative;
     height: 24px;
-    overflow: hidden;
+    overflow: visible;
 
     opacity: 0;
     transform: translateY(6px);

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link rel="stylesheet" href="../../components/css/gk-img-showcase.css">
+  <link rel="stylesheet" href="../../components/css/gk-popup-menu.css">
+  <link rel="stylesheet" href="../../components/css/gk-popup-panel.css">
+  <link rel="stylesheet" href="../../components/css/gk-cards.css">
+
+  <title>Project | TerraLink</title>
+  <style>
+    html, body { height: 100%; margin: 0; overflow: hidden; }
+    #bg { position: fixed; inset: 0; z-index: -1; }
+  </style>
+</head>
+<body>
+  <div id="bg"></div>
+
+  <script type="module">
+    import { startShowcase } from "../../components/js/gk-image-showcase.js";
+
+    await startShowcase({
+      parent: document.getElementById("bg"),
+      folder: "images/",
+      intervalMs: 8000,
+      fadeMs: 900,
+      shuffle: true,
+      overlay: true,
+    });
+  </script>
+
+  <script type="module">
+  import { mountPopupMenu } from "../../components/js/gk-popup-menu.js";
+
+  mountPopupMenu({
+    delayMs: 400,
+    title: "TerraLink",
+    subtitle: "Procedural Terrain Generation | UDP Networking",
+    subtitleSecondary: "C | C++ | OpenGL | OpenAL",
+    subtitleCycleMs: 8000,
+    buttons: [],
+    });
+  </script>
+</body>
+
+</html>
