@@ -1,8 +1,16 @@
+:root { --gk-showcase-boot-fade: 1400ms; }
+
 .gk-img-showcase {
   position: fixed;
   inset: 0;
   overflow: hidden;
   background: #000;
+
+  opacity: 1;
+  transition: opacity var(--gk-showcase-boot-fade) ease;
+}
+.gk-img-showcase.is-booting {
+  opacity: 0;
 }
 
 .gk-img-showcase__layer {
@@ -12,7 +20,7 @@
   background-size: cover;
   background-repeat: no-repeat;
   opacity: 0;
-  transition: opacity 900ms ease;
+  transition: opacity 1350ms ease;
   will-change: opacity;
 }
 

@@ -57,7 +57,7 @@ function startShowcaseFromSlides(opts) {
 
     const a = document.createElement("div");
     const b = document.createElement("div");
-    a.className = "gk-img-showcase__layer is-visible";
+    a.className = "gk-img-showcase__layer";
     b.className = "gk-img-showcase__layer";
 
     root.append(a, b);
@@ -80,7 +80,26 @@ function startShowcaseFromSlides(opts) {
 
     preload(slides);
 
-    setBg(a, slides[index]);
+    (async () => {
+        const url = slides[index];
+        const img = new Image();
+        img.decoding = "async";
+        img.src = url;
+
+        if (img.decode) {
+            await img.decode().catch(() => {});
+        } else {
+            await new Promise((res) => {
+                img.onload = () => res();
+                img.onerror = () => res();
+            });
+        }
+      
+        setBg(a, url);
+        requestAnimationFrame(() => {
+            a.classList.add("is-visible");
+        });
+    })();
 
     function goTo(i) {
         index = clampIndex(i, slides.length);
