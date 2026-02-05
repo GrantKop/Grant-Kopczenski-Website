@@ -1,5 +1,8 @@
 // This component is for the dynamic popup menu I use over my image showcases
 
+import { mountPopupPanel } from "/components/js/gk-popup-panel.js";
+import { PANELS } from "/components/js/gk-panels.js";
+
 /**
 * @param {PopupMenuOptions} options
 * @returns {{
@@ -16,11 +19,18 @@ export function mountPopupMenu(options = {}) {
     const opts = normalize(options);
     const parent = opts.parent ?? document.body;
 
+    const shell = document.createElement('div');
+    shell.className = 'gk-popup-shell';
+    shell.setAttribute("data-docked", "0");
+    parent.appendChild(shell);
+
     const el = document.createElement('div');
     el.className = opts.className;
     el.setAttribute('aria-label', 'Popup menu');
     el.setAttribute('data-state', 'hidden');
     el.setAttribute('data-subtitle', 'a');
+    el.setAttribute('data-docked', '0');
+    el.setAttribute('data-active-btn', '');
 
     const inner = document.createElement('div');
     inner.className = 'gk-popup-menu__inner';
@@ -69,31 +79,174 @@ export function mountPopupMenu(options = {}) {
     nav.className = 'gk-popup-menu__nav';
     nav.setAttribute('aria-label', 'Navigation');
 
+    const panel = mountPopupPanel({
+        parent: shell,
+        className: 'gk-popup-panel',
+    });
+
+    let activeButtonId = '';
+
+    const baseHeader = {
+        title: opts.title,
+        subtitle: opts.subtitle,
+        subtitleSecondary: opts.subtitleSecondary,
+    };
+
+    let headerSwapToken = 0;
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    function stopSubtitleCycle() {
+        if (subtitleTimer != null) {
+            window.clearInterval(subtitleTimer);
+            subtitleTimer = null;
+        }
+    }
+
+    function startSubtitleCycle() {
+        const hasSecondary = subtitleSecondaryEl.textContent.trim().length > 0;
+        if (hasSecondary && opts.subtitleCycleMs > 0 && subtitleTimer == null) {
+            subtitleTimer = window.setInterval(() => {
+                subtitleState = (subtitleState === 'a') ? 'b' : 'a';
+                el.setAttribute('data-subtitle', subtitleState);
+            }, opts.subtitleCycleMs);
+        }
+    }
+
+    function cssMs(name, fallback) {
+        const v = getComputedStyle(el).getPropertyValue(name).trim();
+        const n = parseFloat(v);
+        return Number.isFinite(n) ? n : fallback;
+    }
+
+    async function swapHeader({ title, subtitle, subtitleSecondary }, { big = true } = {}) {
+        const token = ++headerSwapToken;
+
+        const outMs = cssMs('--gk-header-out-ms', 220);
+        const inMs  = cssMs('--gk-header-in-ms', 240);
+
+        el.setAttribute('data-header-anim', 'out');
+        await sleep(outMs);
+        if (token !== headerSwapToken) return;
+
+        titleEl.textContent = String(title ?? '');
+        subtitleEl.textContent = String(subtitle ?? '');
+        subtitleSecondaryEl.textContent = String(subtitleSecondary ?? '');
+
+        stopSubtitleCycle();
+        subtitleState = 'a';
+        el.setAttribute('data-subtitle', 'a');
+        startSubtitleCycle();
+
+        el.setAttribute('data-header-big', big ? '1' : '0');
+        el.setAttribute('data-header-anim', 'in');
+
+        await sleep(inMs);
+        if (token !== headerSwapToken) return;
+        el.setAttribute('data-header-anim', 'idle');
+    }
+
+    function setHeaderForPanel(panelConfig) {
+        swapHeader({
+                title: panelConfig?.menuTitle ?? baseHeader.title,
+                subtitle: panelConfig?.menuSubtitle ?? baseHeader.subtitle,
+                subtitleSecondary: '',
+            },
+            { big: true }
+        );
+    }
+
+    function restoreBaseHeader() {
+        swapHeader(baseHeader, { big: false });
+    }
+
+    function setDocked(docked) {
+        shell.setAttribute('data-docked', docked ? '1' : '0');
+    }
+
+    function setActiveButton(id) {
+        activeButtonId = id || '';
+        el.setAttribute('data-active-btn', activeButtonId);
+
+        [...nav.querySelectorAll('.gk-popup-menu__btn')].forEach(btn => {
+            btn.classList.toggle('is-active', btn.dataset.btnId === activeButtonId && panel.isOpen());
+        });
+    }
+
+    function openPanel(buttonId, panelId) {
+        const panelConfig = PANELS[panelId];
+        if (!panelConfig) {
+            console.warn("No panel config found for:", panelId);
+            return;
+        }
+
+        setDocked(true);
+        setActiveButton(buttonId);
+        panel.open(buttonId, panelConfig);
+
+        setHeaderForPanel(panelConfig);
+
+        [...nav.querySelectorAll('.gk-popup-menu__btn')].forEach(btn => {
+            btn.classList.toggle('is-active', btn.dataset.btnId === buttonId);
+        });
+    }
+
+    function closePanel() {
+        panel.close();
+        setDocked(false);
+        setActiveButton('');
+
+        restoreBaseHeader();
+
+        [...nav.querySelectorAll('.gk-popup-menu__btn')].forEach(btn => {
+            btn.classList.remove('is-active');
+        });
+    }
+
+    function togglePanel(buttonId, panelId) {
+        const isSame = panel.isOpen() && activeButtonId === buttonId;
+        if (isSame) closePanel();
+        else openPanel(buttonId, panelId);
+    }
+
     function renderButtons(btns) {
         nav.innerHTML = '';
+
         for (const b of btns) {
             const a = document.createElement('a');
             a.className = 'gk-popup-menu__btn' + (b.primary ? ' is-primary' : '');
             a.href = b.href ?? '#';
             a.textContent = b.label ?? '';
+            a.dataset.btnId = b.id;
 
             if (b.title) a.title = b.title;
             if (b.ariaLabel) a.setAttribute('aria-label', b.ariaLabel);
             else if (b.title) a.setAttribute('aria-label', b.title);
 
-            if (b.title != null) {
-              a.setAttribute('title', String(b.title));
-              console.log('set title:', b.label, b.title);
-            }
+            const hasPanelId = typeof b.panelId === 'string' && b.panelId.length > 0;
+            const hasHandler = typeof b.onClick === 'function';
 
-            if (b.target) a.target = b.target;
-            if (b.rel) a.rel = b.rel;
-            
+            if (hasPanelId || hasHandler) {
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    if (hasHandler) {
+                        b.onClick({
+                            toggle: () => togglePanel(b.id, b.panelId),
+                            open: () => openPanel(b.id, b.panelId),
+                            close: () => closePanel(),
+                        });
+                        return;
+                    }
+                    togglePanel(b.id, b.panelId);
+                });
+            }
             nav.appendChild(a);
         }
     }
 
     renderButtons(opts.buttons);
+
     const right = document.createElement('div');
     right.className = 'gk-popup-menu__right';
 
@@ -105,7 +258,7 @@ export function mountPopupMenu(options = {}) {
     right.append(nav, footer);
     inner.append(left, right);
     el.appendChild(inner);
-    parent.appendChild(el);
+    shell.appendChild(el);
 
     let timer = null;
     let subtitleTimer = null;
@@ -113,9 +266,9 @@ export function mountPopupMenu(options = {}) {
 
     function show() {
         el.setAttribute('data-state', 'visible');
-
+        
         const hasSecondary = subtitleSecondaryEl.textContent.trim().length > 0;
-
+        
         if (hasSecondary && opts.subtitleCycleMs > 0 && subtitleTimer == null) {
             subtitleTimer = window.setInterval(() => {
                 subtitleState = (subtitleState === 'a') ? 'b' : 'a';
@@ -126,6 +279,7 @@ export function mountPopupMenu(options = {}) {
 
     function hide() {
         el.setAttribute('data-state', 'hidden');
+        closePanel();
         if (subtitleTimer != null) {
           window.clearInterval(subtitleTimer);
           subtitleTimer = null;
@@ -148,11 +302,8 @@ export function mountPopupMenu(options = {}) {
         el.remove();
     }
 
-    if (opts.delayMs > 0) {
-        timer = window.setTimeout(show, opts.delayMs);
-    } else {
-        show();
-    }
+    if (opts.delayMs > 0) timer = window.setTimeout(show, opts.delayMs);
+    else show();
 
     return { el, show, hide, setText, setButtons, destroy };
 }
