@@ -17,7 +17,7 @@ export const PANELS = {
     },
     prints: {
         menuTitle: "3D Prints and Files",
-        menuSubtitle: "Click a card to learn more",
+        menuSubtitle: "Click on a card to learn more",
         render({ panelEl }) {
             panelEl.innerHTML = ``;
         },
