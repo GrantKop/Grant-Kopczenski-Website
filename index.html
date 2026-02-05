@@ -8,6 +8,7 @@
 
   <link rel="stylesheet" href="/components/css/gk-img-showcase.css">
   <link rel="stylesheet" href="/components/css/gk-popup-menu.css">
+  <link rel="stylesheet" href="/components/css/gk-popup-panel.css">
 
   <title>Grant Kopczenski | Project Portfolio</title>
   <style>
@@ -41,14 +42,12 @@
     subtitleSecondary: "Project Portfolio | Photograph Album",
     subtitleCycleMs: 8000,
     buttons: [
-      { label: "Projects", title: "Software Projects" },
-      { label: "Photos", title: "Photo Album" },
-      { label: "3D Prints", title: "3D Designs and Files" },
+      { id: "Projects", label: "Projects", title: "Software Projects", panelId: "projects" },
+      { id: "Photos", label: "Photos", title: "Photo Album", panelId: "photos" },
+      { id: "3D-Prints", label: "3D Prints", title: "3D Designs and Files", panelId: "prints" },
     ],
     });
   </script>
 </body>
 
-  <!-- <script src="/components/js/gk-footer.js" defer></script>
-  <gk-footer></gk-footer> -->
 </html>
