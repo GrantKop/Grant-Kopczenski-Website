@@ -97,6 +97,10 @@ export function mountPopupMenu(options = {}) {
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
     function stopSubtitleCycle() {
+        if (subtitleFirstTimer != null) {
+            window.clearTimeout(subtitleFirstTimer);
+            subtitleFirstTimer = null;
+        }
         if (subtitleTimer != null) {
             window.clearInterval(subtitleTimer);
             subtitleTimer = null;
@@ -105,11 +109,27 @@ export function mountPopupMenu(options = {}) {
 
     function startSubtitleCycle() {
         const hasSecondary = subtitleSecondaryEl.textContent.trim().length > 0;
-        if (hasSecondary && opts.subtitleCycleMs > 0 && subtitleTimer == null) {
-            subtitleTimer = window.setInterval(() => {
-                subtitleState = (subtitleState === 'a') ? 'b' : 'a';
-                el.setAttribute('data-subtitle', subtitleState);
-            }, opts.subtitleCycleMs);
+        if (!hasSecondary || opts.subtitleCycleMs <= 0) return;
+        if (subtitleTimer != null || subtitleFirstTimer != null) return;
+
+        const firstMs = Math.max(
+            0,
+            Math.min(opts.subtitleFirstCycleMs ?? opts.subtitleCycleMs, opts.subtitleCycleMs)
+        );
+
+        const flip = () => {
+            subtitleState = (subtitleState === 'a') ? 'b' : 'a';
+            el.setAttribute('data-subtitle', subtitleState);
+        };
+
+        if (firstMs > 0 && firstMs < opts.subtitleCycleMs) {
+            subtitleFirstTimer = window.setTimeout(() => {
+                subtitleFirstTimer = null;
+                flip();
+                subtitleTimer = window.setInterval(flip, opts.subtitleCycleMs);
+            }, firstMs);
+        } else {
+            subtitleTimer = window.setInterval(flip, opts.subtitleCycleMs);
         }
     }
 
@@ -262,28 +282,18 @@ export function mountPopupMenu(options = {}) {
 
     let timer = null;
     let subtitleTimer = null;
+    let subtitleFirstTimer = null;
     let subtitleState = 'a';
 
     function show() {
         el.setAttribute('data-state', 'visible');
-        
-        const hasSecondary = subtitleSecondaryEl.textContent.trim().length > 0;
-        
-        if (hasSecondary && opts.subtitleCycleMs > 0 && subtitleTimer == null) {
-            subtitleTimer = window.setInterval(() => {
-                subtitleState = (subtitleState === 'a') ? 'b' : 'a';
-                el.setAttribute('data-subtitle', subtitleState);
-            }, opts.subtitleCycleMs);
-        }
+        startSubtitleCycle();
     }
 
     function hide() {
         el.setAttribute('data-state', 'hidden');
         closePanel();
-        if (subtitleTimer != null) {
-          window.clearInterval(subtitleTimer);
-          subtitleTimer = null;
-        }
+        stopSubtitleCycle();
     }
 
     function setText(title, subtitle, subtitleSecondary) {
@@ -316,6 +326,7 @@ function normalize(opts) {
         subtitle:       typeof opts.subtitle === 'string' ? opts.subtitle : 'Subtitle Primary',
         subtitleSecondary:  typeof opts.subtitleSecondary === 'string' ? opts.subtitleSecondary : 'Subtitle Secondary',
         subtitleCycleMs:    typeof opts.subtitleCycleMs === 'number' ? opts.subtitleCycleMs : 8000,
+        subtitleFirstCycleMs: typeof opts.subtitleFirstCycleMs === "number" ? opts.subtitleFirstCycleMs : 4500,
         buttons:        buttons && buttons.length 
             ? buttons
             : [

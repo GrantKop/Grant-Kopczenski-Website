@@ -75,6 +75,7 @@ function startShowcaseFromSlides(opts) {
     let index = clampIndex(opts.startIndex, slides.length);
     let topIsA = true;
     let timer = null;
+    let firstTimer = null;
     let paused = false;
 
     preload(slides);
@@ -103,10 +104,26 @@ function startShowcaseFromSlides(opts) {
     function startTimer() {
         if (opts.intervalMs <= 0) return;
         stopTimer();
-        timer = window.setInterval(next, opts.intervalMs);
+
+        const firstMs = Math.max(0, Math.min(opts.firstIntervalMs ?? opts.intervalMs, opts.intervalMs));
+        if (firstMs > 0 && firstMs < opts.intervalMs) {
+            firstTimer = window.setTimeout(() => {
+                firstTimer = null;
+                next();
+                if (!paused) {
+                    timer = window.setInterval(next, opts.intervalMs);
+                }
+            }, firstMs);
+        } else {
+            timer = window.setInterval(next, opts.intervalMs);
+        }
     }
 
     function stopTimer() {
+        if (firstTimer != null) {
+            window.clearTimeout(firstTimer);
+            firstTimer = null;
+        }
         if (timer != null) {
             window.clearInterval(timer);
             timer = null;
@@ -145,6 +162,7 @@ function normalizeOptions(o = {}) {
         folder:     o.folder,
         parent:     o.parent,
         intervalMs: typeof o.intervalMs === "number" ? o.intervalMs : 8000,
+        firstIntervalMs: typeof o.firstIntervalMs === "number" ? o.firstIntervalMs : 4500,
         fadeMs:     typeof o.fadeMs === "number" ? o.fadeMs : 900,
         shuffle:    o.shuffle !== false,
         overlay:    o.overlay !== false,
