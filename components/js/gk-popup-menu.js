@@ -85,6 +85,7 @@ export function mountPopupMenu(options = {}) {
     });
 
     let activeButtonId = '';
+    const buttonToPanelId = new Map();
 
     const baseHeader = {
         title: opts.title,
@@ -93,8 +94,10 @@ export function mountPopupMenu(options = {}) {
     };
 
     let headerSwapToken = 0;
+    let headerIsSwapped = false;
 
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+    function nextFrame() { return new Promise((r) => requestAnimationFrame(() => r())); }
 
     function stopSubtitleCycle() {
         if (subtitleFirstTimer != null) {
@@ -145,7 +148,14 @@ export function mountPopupMenu(options = {}) {
         const outMs = cssMs('--gk-header-out-ms', 220);
         const inMs  = cssMs('--gk-header-in-ms', 240);
 
+        el.setAttribute('data-header-anim', 'idle');
+        await nextFrame();
+        if (token !== headerSwapToken) return;
+
         el.setAttribute('data-header-anim', 'out');
+        await nextFrame();
+        if (token !== headerSwapToken) return;
+
         await sleep(outMs);
         if (token !== headerSwapToken) return;
 
@@ -167,6 +177,7 @@ export function mountPopupMenu(options = {}) {
     }
 
     function setHeaderForPanel(panelConfig) {
+        headerIsSwapped = true;
         swapHeader({
                 title: panelConfig?.menuTitle ?? baseHeader.title,
                 subtitle: panelConfig?.menuSubtitle ?? baseHeader.subtitle,
@@ -177,7 +188,12 @@ export function mountPopupMenu(options = {}) {
     }
 
     function restoreBaseHeader() {
+        headerIsSwapped = false;
         swapHeader(baseHeader, { big: false });
+    }
+
+    function panelWantsHeaderSwap(cfg) {
+        return cfg?.swapMenuHeader !== false;
     }
 
     function setDocked(docked) {
@@ -194,17 +210,23 @@ export function mountPopupMenu(options = {}) {
     }
 
     function openPanel(buttonId, panelId) {
-        const panelConfig = PANELS[panelId];
-        if (!panelConfig) {
+        const nextCfg = PANELS[panelId];
+        if (!nextCfg) {
             console.warn("No panel config found for:", panelId);
             return;
         }
 
         setDocked(true);
         setActiveButton(buttonId);
-        panel.open(buttonId, panelConfig);
+        panel.open(buttonId, nextCfg);
 
-        setHeaderForPanel(panelConfig);
+        const nextSwaps  = panelWantsHeaderSwap(nextCfg);
+
+        if (nextSwaps) {
+            setHeaderForPanel(nextCfg);
+        } else if (headerIsSwapped) {
+            restoreBaseHeader();
+        }
 
         [...nav.querySelectorAll('.gk-popup-menu__btn')].forEach(btn => {
             btn.classList.toggle('is-active', btn.dataset.btnId === buttonId);
@@ -212,11 +234,16 @@ export function mountPopupMenu(options = {}) {
     }
 
     function closePanel() {
+        const panelId = buttonToPanelId.get(activeButtonId);
+        const cfg = panelId ? PANELS[panelId] : null;
+
         panel.close();
         setDocked(false);
         setActiveButton('');
 
-        restoreBaseHeader();
+        if (panelWantsHeaderSwap(cfg)) {
+            restoreBaseHeader();
+        }
 
         [...nav.querySelectorAll('.gk-popup-menu__btn')].forEach(btn => {
             btn.classList.remove('is-active');
@@ -231,6 +258,7 @@ export function mountPopupMenu(options = {}) {
 
     function renderButtons(btns) {
         nav.innerHTML = '';
+        buttonToPanelId.clear();
 
         for (const b of btns) {
             const a = document.createElement('a');
@@ -238,6 +266,10 @@ export function mountPopupMenu(options = {}) {
             a.href = b.href ?? '';
             a.textContent = b.label ?? '';
             a.dataset.btnId = b.id;
+
+            if (typeof b.panelId === 'string' && b.panelId.length > 0) {
+                buttonToPanelId.set(b.id, b.panelId);
+            }
 
             if (b.title) a.title = b.title;
             if (b.ariaLabel) a.setAttribute('aria-label', b.ariaLabel);

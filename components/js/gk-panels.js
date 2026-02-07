@@ -5,6 +5,7 @@ export const PANELS = {
         type: "cards",
         menuTitle: "Software Projects",
         menuSubtitle: "Click on a card to learn more",
+        swapMenuHeader: true,
         cards: [
             {
                 title: "TerraLink",
@@ -24,6 +25,7 @@ export const PANELS = {
         type: "cards",
         menuTitle: "Photo Albums",
         menuSubtitle: "Click an album to view more",
+        swapMenuHeader: true,
         cards: [
             {
                 title: "Nothing yet...",
@@ -37,6 +39,7 @@ export const PANELS = {
         type: "cards",
         menuTitle: "3D Prints and Files",
         menuSubtitle: "Click on a card to learn more",
+        swapMenuHeader: true,
         cards: [
             {
                 title: "Nothing yet...",
@@ -50,6 +53,7 @@ export const PANELS = {
         type: "project_about",
         menuTitle: "About TerraLink",
         menuSubtitle: "In-site Wiki",
+        swapMenuHeader: false,
         toc: [
           {
             title: "Overview",
@@ -103,6 +107,7 @@ export const PANELS = {
         type: "cards",
         menuTitle: "Images",
         menuSubtitle: "WIP",
+        swapMenuHeader: false,
         cards: [
             {
                 title: "Nothing yet...",
@@ -116,6 +121,7 @@ export const PANELS = {
         type: "project_about",
         menuTitle: "About my Capstone",
         menuSubtitle: "In-site Wiki",
+        swapMenuHeader: false,
         toc: [
           {
             title: "Overview",
@@ -147,6 +153,7 @@ export const PANELS = {
         type: "cards",
         menuTitle: "Images",
         menuSubtitle: "WIP",
+        swapMenuHeader: false,
         cards: [
             {
                 title: "Nothing yet...",
