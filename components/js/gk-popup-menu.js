@@ -235,7 +235,7 @@ export function mountPopupMenu(options = {}) {
         for (const b of btns) {
             const a = document.createElement('a');
             a.className = 'gk-popup-menu__btn' + (b.primary ? ' is-primary' : '');
-            a.href = b.href ?? '#';
+            a.href = b.href ?? '';
             a.textContent = b.label ?? '';
             a.dataset.btnId = b.id;
 
@@ -260,6 +260,12 @@ export function mountPopupMenu(options = {}) {
                     }
                     togglePanel(b.id, b.panelId);
                 });
+            }
+
+            const isClickable = b.href && b.href !== "#";
+            if (!isClickable) {
+                a.removeAttribute("href");
+                a.setAttribute("role", "article");
             }
             nav.appendChild(a);
         }
