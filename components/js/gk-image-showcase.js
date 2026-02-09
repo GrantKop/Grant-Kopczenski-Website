@@ -57,7 +57,7 @@ function startShowcaseFromSlides(opts) {
 
     const a = document.createElement("div");
     const b = document.createElement("div");
-    a.className = "gk-img-showcase__layer is-visible";
+    a.className = "gk-img-showcase__layer";
     b.className = "gk-img-showcase__layer";
 
     root.append(a, b);
@@ -75,11 +75,31 @@ function startShowcaseFromSlides(opts) {
     let index = clampIndex(opts.startIndex, slides.length);
     let topIsA = true;
     let timer = null;
+    let firstTimer = null;
     let paused = false;
 
     preload(slides);
 
-    setBg(a, slides[index]);
+    (async () => {
+        const url = slides[index];
+        const img = new Image();
+        img.decoding = "async";
+        img.src = url;
+
+        if (img.decode) {
+            await img.decode().catch(() => {});
+        } else {
+            await new Promise((res) => {
+                img.onload = () => res();
+                img.onerror = () => res();
+            });
+        }
+      
+        setBg(a, url);
+        requestAnimationFrame(() => {
+            a.classList.add("is-visible");
+        });
+    })();
 
     function goTo(i) {
         index = clampIndex(i, slides.length);
@@ -103,10 +123,26 @@ function startShowcaseFromSlides(opts) {
     function startTimer() {
         if (opts.intervalMs <= 0) return;
         stopTimer();
-        timer = window.setInterval(next, opts.intervalMs);
+
+        const firstMs = Math.max(0, Math.min(opts.firstIntervalMs ?? opts.intervalMs, opts.intervalMs));
+        if (firstMs > 0 && firstMs < opts.intervalMs) {
+            firstTimer = window.setTimeout(() => {
+                firstTimer = null;
+                next();
+                if (!paused) {
+                    timer = window.setInterval(next, opts.intervalMs);
+                }
+            }, firstMs);
+        } else {
+            timer = window.setInterval(next, opts.intervalMs);
+        }
     }
 
     function stopTimer() {
+        if (firstTimer != null) {
+            window.clearTimeout(firstTimer);
+            firstTimer = null;
+        }
         if (timer != null) {
             window.clearInterval(timer);
             timer = null;
@@ -145,6 +181,7 @@ function normalizeOptions(o = {}) {
         folder:     o.folder,
         parent:     o.parent,
         intervalMs: typeof o.intervalMs === "number" ? o.intervalMs : 8000,
+        firstIntervalMs: typeof o.firstIntervalMs === "number" ? o.firstIntervalMs : 4500,
         fadeMs:     typeof o.fadeMs === "number" ? o.fadeMs : 900,
         shuffle:    o.shuffle !== false,
         overlay:    o.overlay !== false,

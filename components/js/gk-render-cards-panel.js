@@ -27,7 +27,7 @@ export async function renderCardsPanel(panelConfig, { panelEl }) {
     for (const c of cards) {
         const cardEl = tpl.content.firstElementChild.cloneNode(true);
 
-        cardEl.href = c.href || "#";
+        cardEl.href = c.href || "";
 
         const media = cardEl.querySelector(".gk-card__media");
         const img = cardEl.querySelector(".gk-card__img");
@@ -48,6 +48,13 @@ export async function renderCardsPanel(panelConfig, { panelEl }) {
             desc.textContent = c.desc;
         } else {
             desc?.remove();
+        }
+
+        const isClickable = c.href && c.href !== "#";
+        if (!isClickable) {
+            cardEl.removeAttribute("href");
+            cardEl.setAttribute("role", "article");
+            cardEl.style.cursor = "default";
         }
 
         grid.appendChild(cardEl);

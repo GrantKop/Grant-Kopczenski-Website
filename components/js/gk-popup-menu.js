@@ -85,6 +85,7 @@ export function mountPopupMenu(options = {}) {
     });
 
     let activeButtonId = '';
+    const buttonToPanelId = new Map();
 
     const baseHeader = {
         title: opts.title,
@@ -93,10 +94,16 @@ export function mountPopupMenu(options = {}) {
     };
 
     let headerSwapToken = 0;
+    let headerIsSwapped = false;
 
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+    function nextFrame() { return new Promise((r) => requestAnimationFrame(() => r())); }
 
     function stopSubtitleCycle() {
+        if (subtitleFirstTimer != null) {
+            window.clearTimeout(subtitleFirstTimer);
+            subtitleFirstTimer = null;
+        }
         if (subtitleTimer != null) {
             window.clearInterval(subtitleTimer);
             subtitleTimer = null;
@@ -105,11 +112,27 @@ export function mountPopupMenu(options = {}) {
 
     function startSubtitleCycle() {
         const hasSecondary = subtitleSecondaryEl.textContent.trim().length > 0;
-        if (hasSecondary && opts.subtitleCycleMs > 0 && subtitleTimer == null) {
-            subtitleTimer = window.setInterval(() => {
-                subtitleState = (subtitleState === 'a') ? 'b' : 'a';
-                el.setAttribute('data-subtitle', subtitleState);
-            }, opts.subtitleCycleMs);
+        if (!hasSecondary || opts.subtitleCycleMs <= 0) return;
+        if (subtitleTimer != null || subtitleFirstTimer != null) return;
+
+        const firstMs = Math.max(
+            0,
+            Math.min(opts.subtitleFirstCycleMs ?? opts.subtitleCycleMs, opts.subtitleCycleMs)
+        );
+
+        const flip = () => {
+            subtitleState = (subtitleState === 'a') ? 'b' : 'a';
+            el.setAttribute('data-subtitle', subtitleState);
+        };
+
+        if (firstMs > 0 && firstMs < opts.subtitleCycleMs) {
+            subtitleFirstTimer = window.setTimeout(() => {
+                subtitleFirstTimer = null;
+                flip();
+                subtitleTimer = window.setInterval(flip, opts.subtitleCycleMs);
+            }, firstMs);
+        } else {
+            subtitleTimer = window.setInterval(flip, opts.subtitleCycleMs);
         }
     }
 
@@ -125,7 +148,14 @@ export function mountPopupMenu(options = {}) {
         const outMs = cssMs('--gk-header-out-ms', 220);
         const inMs  = cssMs('--gk-header-in-ms', 240);
 
+        el.setAttribute('data-header-anim', 'idle');
+        await nextFrame();
+        if (token !== headerSwapToken) return;
+
         el.setAttribute('data-header-anim', 'out');
+        await nextFrame();
+        if (token !== headerSwapToken) return;
+
         await sleep(outMs);
         if (token !== headerSwapToken) return;
 
@@ -147,6 +177,7 @@ export function mountPopupMenu(options = {}) {
     }
 
     function setHeaderForPanel(panelConfig) {
+        headerIsSwapped = true;
         swapHeader({
                 title: panelConfig?.menuTitle ?? baseHeader.title,
                 subtitle: panelConfig?.menuSubtitle ?? baseHeader.subtitle,
@@ -157,7 +188,12 @@ export function mountPopupMenu(options = {}) {
     }
 
     function restoreBaseHeader() {
+        headerIsSwapped = false;
         swapHeader(baseHeader, { big: false });
+    }
+
+    function panelWantsHeaderSwap(cfg) {
+        return cfg?.swapMenuHeader !== false;
     }
 
     function setDocked(docked) {
@@ -174,17 +210,23 @@ export function mountPopupMenu(options = {}) {
     }
 
     function openPanel(buttonId, panelId) {
-        const panelConfig = PANELS[panelId];
-        if (!panelConfig) {
+        const nextCfg = PANELS[panelId];
+        if (!nextCfg) {
             console.warn("No panel config found for:", panelId);
             return;
         }
 
         setDocked(true);
         setActiveButton(buttonId);
-        panel.open(buttonId, panelConfig);
+        panel.open(buttonId, nextCfg);
 
-        setHeaderForPanel(panelConfig);
+        const nextSwaps  = panelWantsHeaderSwap(nextCfg);
+
+        if (nextSwaps) {
+            setHeaderForPanel(nextCfg);
+        } else if (headerIsSwapped) {
+            restoreBaseHeader();
+        }
 
         [...nav.querySelectorAll('.gk-popup-menu__btn')].forEach(btn => {
             btn.classList.toggle('is-active', btn.dataset.btnId === buttonId);
@@ -192,11 +234,16 @@ export function mountPopupMenu(options = {}) {
     }
 
     function closePanel() {
+        const panelId = buttonToPanelId.get(activeButtonId);
+        const cfg = panelId ? PANELS[panelId] : null;
+
         panel.close();
         setDocked(false);
         setActiveButton('');
 
-        restoreBaseHeader();
+        if (panelWantsHeaderSwap(cfg)) {
+            restoreBaseHeader();
+        }
 
         [...nav.querySelectorAll('.gk-popup-menu__btn')].forEach(btn => {
             btn.classList.remove('is-active');
@@ -211,13 +258,18 @@ export function mountPopupMenu(options = {}) {
 
     function renderButtons(btns) {
         nav.innerHTML = '';
+        buttonToPanelId.clear();
 
         for (const b of btns) {
             const a = document.createElement('a');
             a.className = 'gk-popup-menu__btn' + (b.primary ? ' is-primary' : '');
-            a.href = b.href ?? '#';
+            a.href = b.href ?? '';
             a.textContent = b.label ?? '';
             a.dataset.btnId = b.id;
+
+            if (typeof b.panelId === 'string' && b.panelId.length > 0) {
+                buttonToPanelId.set(b.id, b.panelId);
+            }
 
             if (b.title) a.title = b.title;
             if (b.ariaLabel) a.setAttribute('aria-label', b.ariaLabel);
@@ -241,6 +293,12 @@ export function mountPopupMenu(options = {}) {
                     togglePanel(b.id, b.panelId);
                 });
             }
+
+            const isClickable = b.href && b.href !== "#";
+            if (!isClickable) {
+                a.removeAttribute("href");
+                a.setAttribute("role", "article");
+            }
             nav.appendChild(a);
         }
     }
@@ -262,28 +320,18 @@ export function mountPopupMenu(options = {}) {
 
     let timer = null;
     let subtitleTimer = null;
+    let subtitleFirstTimer = null;
     let subtitleState = 'a';
 
     function show() {
         el.setAttribute('data-state', 'visible');
-        
-        const hasSecondary = subtitleSecondaryEl.textContent.trim().length > 0;
-        
-        if (hasSecondary && opts.subtitleCycleMs > 0 && subtitleTimer == null) {
-            subtitleTimer = window.setInterval(() => {
-                subtitleState = (subtitleState === 'a') ? 'b' : 'a';
-                el.setAttribute('data-subtitle', subtitleState);
-            }, opts.subtitleCycleMs);
-        }
+        startSubtitleCycle();
     }
 
     function hide() {
         el.setAttribute('data-state', 'hidden');
         closePanel();
-        if (subtitleTimer != null) {
-          window.clearInterval(subtitleTimer);
-          subtitleTimer = null;
-        }
+        stopSubtitleCycle();
     }
 
     function setText(title, subtitle, subtitleSecondary) {
@@ -316,13 +364,10 @@ function normalize(opts) {
         subtitle:       typeof opts.subtitle === 'string' ? opts.subtitle : 'Subtitle Primary',
         subtitleSecondary:  typeof opts.subtitleSecondary === 'string' ? opts.subtitleSecondary : 'Subtitle Secondary',
         subtitleCycleMs:    typeof opts.subtitleCycleMs === 'number' ? opts.subtitleCycleMs : 8000,
+        subtitleFirstCycleMs: typeof opts.subtitleFirstCycleMs === "number" ? opts.subtitleFirstCycleMs : 4500,
         buttons:        buttons && buttons.length 
             ? buttons
-            : [
-                { label: 'Button 1', href: '' },
-                { label: 'Button 2', href: '' },
-                { label: 'Button 3', href: '' },
-            ],
+            : [],
         parent: opts.parent,
         className: typeof opts.className === 'string' ? opts.className : 'gk-popup-menu',
     };

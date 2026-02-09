@@ -10,8 +10,9 @@
   <link rel="stylesheet" href="/components/css/gk-popup-menu.css">
   <link rel="stylesheet" href="/components/css/gk-popup-panel.css">
   <link rel="stylesheet" href="/components/css/gk-cards.css">
+  <link rel="stylesheet" href="/components/css/gk-project-about.css">
 
-  <title>Grant Kopczenski | Project Portfolio</title>
+  <title>Project | Capstone Space Flight Sim</title>
   <style>
     html, body { height: 100%; margin: 0; overflow: hidden; }
     #bg { position: fixed; inset: 0; z-index: -1; }
@@ -21,7 +22,7 @@
   <div id="bg"></div>
 
   <script type="module">
-    import { startShowcase } from "/components/js/gk-image-showcase.js";
+    import { startShowcase } from "../../components/js/gk-image-showcase.js";
 
     await startShowcase({
       parent: document.getElementById("bg"),
@@ -35,19 +36,20 @@
   </script>
 
   <script type="module">
-  import { mountPopupMenu } from "/components/js/gk-popup-menu.js";
+  import { mountPopupMenu } from "../../components/js/gk-popup-menu.js";
 
   mountPopupMenu({
     delayMs: 850,
-    title: "Grant Kopczenski",
-    subtitle: "Software Developer | Photographer | 3D Printer",
-    subtitleSecondary: "Project Portfolio | Photograph Album",
+    title: "Senior Capstone",
+    subtitle: "Immersive Physics | Collision Avoidance | Beautiful Environment",
+    subtitleSecondary: "C++ | Unreal Engine 5 | Visual Scripting",
     subtitleCycleMs: 8000,
     subtitleFirstCycleMs: 5500,
     buttons: [
+      { id: "About", label: "About", title: "About the Project", panelId: "capstone_about" },
+      { id: "Images", label: "Images", title: "Project Images", panelId: "capstone_images" },
       { id: "Projects", label: "Projects", title: "Software Projects", panelId: "home_projects" },
-      { id: "Photos", label: "Photos", title: "Photo Album", panelId: "home_photos" },
-      { id: "3D-Prints", label: "3D Prints", title: "3D Designs and Files", panelId: "home_prints" },
+      { id: "Return", label: "Home", title: "Return to Home", href: "/" },
     ],
     });
   </script>

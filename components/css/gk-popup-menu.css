@@ -8,9 +8,9 @@
     --gk-popup-muted:   rgba(255, 255, 255, 0.72);
     --gk-popup-shadow:  0 18px 55px rgba(0,0,0,0.40);
 
-    --gk-popup-text-duration: 2000ms;
-    --gk-popup-title-delay: 1150ms;
-    --gk-popup-subtitle-delay: 1400ms;
+    --gk-popup-text-duration: 1750ms;
+    --gk-popup-title-delay: 900ms;
+    --gk-popup-subtitle-delay: 1100ms;
 
     --gk-dock-ease: cubic-bezier(.22, 1, .36, 1);
     --gk-dock-duration: 620ms;
@@ -152,7 +152,7 @@
 .gk-popup-menu__subtitle-wrap {
     position: relative;
     height: 24px;
-    overflow: hidden;
+    overflow: visible;
 
     opacity: 0;
     transform: translateY(6px);
@@ -299,6 +299,7 @@
     transform: translateY(-2px);
     background: rgba(255,255,255,0.10);
     border-color: rgba(255,255,255,0.24);
+    cursor: pointer;
 }
 .gk-popup-menu__btn:focus-visible {
     outline: 2px solid rgba(124,92,255,0.65);
