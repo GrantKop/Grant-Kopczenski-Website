@@ -11,8 +11,10 @@ function clear(el) { el.innerHTML = ""; }
 function appendBlocks(bodyEl, blocks){
   for (const b of blocks || []) {
     if (!b || typeof b !== "object") continue;
-    if (b.type === "h2") bodyEl.appendChild(makeEl("h2", b.text));
+    if (b.type === "h1") bodyEl.appendChild(makeEl("h1", b.text));
+    else if (b.type === "h2") bodyEl.appendChild(makeEl("h2", b.text));
     else if (b.type === "h3") bodyEl.appendChild(makeEl("h3", b.text));
+    else if (b.type === "h4") bodyEl.appendChild(makeEl("h4", b.text));
     else if (b.type === "p") bodyEl.appendChild(makeEl("p", b.text));
     else if (b.type === "ul") {
       const ul = document.createElement("ul");

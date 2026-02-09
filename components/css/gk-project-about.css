@@ -30,15 +30,15 @@
 
   background: linear-gradient(
     180deg,
-    rgba(255,255,255,0.08),
-    rgba(255,255,255,0.00)
+    rgba(255,255,255,0.15),
+    rgba(255,255,255,0.05)
   ), var(--gk-card-bg);
 
   border: 1px solid var(--gk-card-border);
   box-shadow: var(--gk-card-shadow);
 
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 
   transform: translateZ(0);
 
@@ -129,7 +129,7 @@
   font: inherit;
   text-decoration: none;
   font-size: 19px;
-  line-height: 1.25;
+  line-height: 1.18;
   letter-spacing: 0.35px;
   padding: 1px 7px;
   margin: 0;
@@ -138,7 +138,7 @@
   appearance: none;
   border: none;
   background: transparent;
-  color: rgba(255,255,255,0.78);
+  color: rgba(255,255,255,0.76);
 
   cursor: pointer;
   user-select: none;
@@ -152,14 +152,19 @@
 }
 .gk-project-about__toc-item:active {
   opacity: 1;
-  color: rgb(255, 255, 255);
+  color: rgba(255,255,255,1);
   transform: translateX(5px);
 }
 .gk-project-about__toc-item.is-active {
-  color: rgb(255, 255, 255);
-  text-shadow: 0 0 18px rgba(124,92,255,0.25);
+  color: rgba(255,255,255,1);
+  text-shadow:
+    0 0 8px rgba(255,255,255,0.22),
+    0 0 18px rgba(255,255,255,0.06);
   transform: translateX(5px);
-  text-decoration: underline;
+  text-decoration-line: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(255,255,255,0.32);
 }
 
 .gk-project-about__body {
@@ -179,48 +184,68 @@
   overscroll-behavior: contain;
 }
 
+.gk-project-about__body h1,
 .gk-project-about__body h2,
-.gk-project-about__body h3 {
+.gk-project-about__body h3,
+.gk-project-about__body h4 {
   margin: 0;
   line-height: 1.18;
+  letter-spacing: 0.35px;
+}
+
+.gk-project-about__body h1 { 
+  font-size: 56px;
+  color: rgba(255,255,255,1);
+  border-bottom: 2px solid rgba(255,255,255,0.18);
+  padding-bottom: 2px;
 }
 
 .gk-project-about__body h2 { 
-  font-size: 35px;
-  letter-spacing: 0.35px;
+  font-size: 40px;
   color: rgba(255,255,255,1);
-  border-bottom: 1px solid rgba(255,255,255,0.12);
+  border-bottom: 1px solid rgba(255,255,255,0.18);
+  padding-bottom: 2px;
+  padding-top: 12px;
 }
 
 .gk-project-about__body h3 {
-  font-size: 29px;
+  font-size: 34px;
   color: rgba(255,255,255,1);
-  letter-spacing: 0.35px;
+  padding-bottom: 1px;
+  padding-top: 8px;
+}
+
+.gk-project-about__body h4 {
+  font-size: 25px;
+  color: rgba(255,255,255,1);
+  padding-bottom: 1px;
+  padding-top: 4px;
 }
 
 .gk-project-about__body p {
   margin: 0;
-  font-size: 19.5px;
+  font-size: 20px;
   letter-spacing: 0.35px;
-  line-height: 1.55;
+  line-height: 1.28;
+  padding-top: 3px;
   color: rgba(255,255,255,0.90);
   overflow-wrap: anywhere;
-  word-break: break-word;
-  hyphens: auto; 
 }
 
 .gk-project-about__body ul {
   margin: 0;
-  padding-left: 21px;
+  padding-left: 35px;
   font-size: 20px;
   letter-spacing: 0.35px;
+  line-height: 1.2;
   display: grid;
-  gap: 8px;
+  gap: 3px;
   color: rgba(255,255,255,0.90);
 }
 
 .gk-project-about__body li {
-  line-height: 1.45;
+  line-height: 1.3;
+  margin: 0;
 }
 
 .gk-project-about__content {
@@ -237,7 +262,7 @@
 .gk-project-about__links {
   margin-top: auto;
   padding-top: 12px;
-  border-top: 1px solid rgba(255,255,255,0.12);
+  border-top: 1.2px solid rgba(255,255,255,0.8);
 
   display: flex;
   flex-direction: column;
@@ -272,8 +297,8 @@
 }
 
 .gk-project-about__links-title {
-  font-size: 18px;
-  letter-spacing: 0.35px;
+  font-size: 20px;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
   color: rgba(255,255,255,1);
 }
