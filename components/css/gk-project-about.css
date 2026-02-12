@@ -34,7 +34,7 @@
     rgba(255,255,255,0.05)
   ), var(--gk-card-bg);
 
-  border: 1px solid var(--gk-card-border);
+  border: 1px solid var(--gk-card-border) !important;
   box-shadow: var(--gk-card-shadow);
 
   backdrop-filter: blur(16px);
@@ -164,7 +164,7 @@
   text-decoration-line: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 4px;
-  text-decoration-color: rgba(255,255,255,0.32);
+  text-decoration-color: rgba(255,255,255,0.76);
 }
 
 .gk-project-about__body {
@@ -182,6 +182,7 @@
 
   overflow: hidden;
   overscroll-behavior: contain;
+  user-select: text;
 }
 
 .gk-project-about__body h1,
@@ -267,6 +268,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  user-select: none;
 }
 
 .gk-project-about__link {

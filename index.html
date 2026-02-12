@@ -7,14 +7,15 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <link rel="stylesheet" href="/components/css/gk-img-showcase.css">
-  <link rel="stylesheet" href="/components/css/gk-popup-menu.css">
+  <link rel="stylesheet" href="/components/css/gk-snackbar.css">
   <link rel="stylesheet" href="/components/css/gk-popup-panel.css">
   <link rel="stylesheet" href="/components/css/gk-cards.css">
+  <link rel="stylesheet" href="/components/css/gk-project-about.css">
 
-  <title>Grant Kopczenski | Project Portfolio</title>
+  <title>Grant Kopczenski | Project Portfolio | Photograph Album</title>
   <style>
     html, body { height: 100%; margin: 0; overflow: hidden; }
-    #bg { position: fixed; inset: 0; z-index: -1; }
+    #bg { position: fixed; inset: 0; z-index: -1; background: #000; }
   </style>
 </head>
 <body>
@@ -35,20 +36,41 @@
   </script>
 
   <script type="module">
-  import { mountPopupMenu } from "/components/js/gk-popup-menu.js";
+    import { mountPopupMenu } from "/components/js/gk-snackbar.js";
+  
+    const menu = mountPopupMenu({
+      delayMs: 850,
+      title: "Grant Kopczenski",
+      subtitle: "Software Developer | Photographer | 3D Printer",
+      subtitleSecondary: "Project Portfolio | Photograph Album",
+      subtitleCycleMs: 8000,
+      subtitleFirstCycleMs: 5500,
+      buttons: [
+        { id: "Projects", label: "Projects", title: "Software Projects", panelId: "home_projects" },
+        { id: "Photos", label: "Photos", title: "Photo Album", panelId: "home_photos" },
+        { id: "3D-Prints", label: "3D Prints", title: "3D Designs and Files", panelId: "home_prints" },
+      ],
+    });
+        
+    const openFromHash = () => {
+      const h = (location.hash || "").toLowerCase();
+        
+      const tryOpen = (id) => {
+        const isOpen = menu.el.getAttribute("data-active-btn") === id
+                    && menu.el.getAttribute("data-docked") === "1";
+        if (isOpen) return;
 
-  mountPopupMenu({
-    delayMs: 850,
-    title: "Grant Kopczenski",
-    subtitle: "Software Developer | Photographer | 3D Printer",
-    subtitleSecondary: "Project Portfolio | Photograph Album",
-    subtitleCycleMs: 8000,
-    subtitleFirstCycleMs: 5500,
-    buttons: [
-      { id: "Projects", label: "Projects", title: "Software Projects", panelId: "home_projects" },
-      { id: "Photos", label: "Photos", title: "Photo Album", panelId: "home_photos" },
-      { id: "3D-Prints", label: "3D Prints", title: "3D Designs and Files", panelId: "home_prints" },
-    ],
+        menu.el.querySelector(`[data-btn-id="${id}"]`)?.click();
+      };
+
+      if (h === "#projects") tryOpen("Projects");
+      else if (h === "#photos") tryOpen("Photos");
+      else if (h === "#prints" || h === "#3d-prints") tryOpen("3D-Prints");
+    };
+
+    setTimeout(openFromHash, 850);
+    window.addEventListener("pageshow", (e) => {
+      if (e.persisted) setTimeout(openFromHash, 850);
     });
   </script>
 </body>

@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <link rel="stylesheet" href="/components/css/gk-img-showcase.css">
-  <link rel="stylesheet" href="/components/css/gk-popup-menu.css">
+  <link rel="stylesheet" href="/components/css/gk-snackbar.css">
   <link rel="stylesheet" href="/components/css/gk-popup-panel.css">
   <link rel="stylesheet" href="/components/css/gk-cards.css">
   <link rel="stylesheet" href="/components/css/gk-project-about.css">
@@ -36,7 +36,7 @@
   </script>
 
   <script type="module">
-  import { mountPopupMenu } from "../../components/js/gk-popup-menu.js";
+  import { mountPopupMenu } from "/components/js/gk-snackbar.js";
 
   mountPopupMenu({
     delayMs: 850,
@@ -48,8 +48,7 @@
     buttons: [
       { id: "About", label: "About", title: "About the Project", panelId: "terralink_about" },
       { id: "Images", label: "Images", title: "Project Images", panelId: "terralink_images" },
-      { id: "Projects", label: "Projects", title: "Software Projects", panelId: "home_projects" },
-      { id: "Return", label: "Home", title: "Return to Home", href: "/" },
+      { id: "Return", label: "Back", title: "Return to Projects Page", href: "/#projects" },
     ],
     });
   </script>
