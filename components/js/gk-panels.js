@@ -10,16 +10,16 @@ export const PANELS = {
         swapMenuHeader: true,
         cards: [
             {
-                title: "TerraLink",
-                desc:  "Procedural voxel terrain engine built in C++ with OpenGL and OpenAL. Supports terrain streaming.",
-                img:   "/images/terralink_project.png",
-                href:  "/projects/terralink"
+              title: "TerraLink",
+              desc:  "Procedural voxel terrain engine built in C++ with OpenGL and OpenAL. Supports terrain streaming.",
+              img:   "/images/terralink_project.png",
+              href:  "/projects/terralink"
             },
             {
-                title: "Senior Capstone",
-                desc:  "Immersive space flight simulator built in Unreal Engine 5. Developed as my senior capstone project with a team.",
-                img:   "/images/capstone_project.png",
-                href:  "/projects/capstone"
+              title: "Senior Capstone",
+              desc:  "Immersive space flight simulator built in Unreal Engine 5. Developed as my senior capstone project with a team.",
+              img:   "/images/capstone_project.png",
+              href:  "/projects/capstone"
             },
         ],
     },
@@ -31,10 +31,10 @@ export const PANELS = {
         swapMenuHeader: true,
         cards: [
             {
-                title: "Nothing yet...",
-                desc:  "",
-                img:   "/images/sad.png",
-                href:  "#"
+              title: "Nothing yet...",
+              desc:  "",
+              img:   "/images/sad.png",
+              href:  "#"
             },
         ],
     },
@@ -46,10 +46,10 @@ export const PANELS = {
         swapMenuHeader: true,
         cards: [
             {
-                title: "Nothing yet...",
-                desc:  "",
-                img:   "/images/sad.png",
-                href:  "#"
+              title: "Nothing yet...",
+              desc:  "",
+              img:   "/images/sad.png",
+              href:  "#"
             },
         ],
     },
@@ -112,7 +112,7 @@ export const PANELS = {
                   { type: "p", text: "With no player models, items, NPCs, bosses, or ultimate goals, the overall \"experience\" playing TerraLink is pretty mundane. " +
                     "However, if you enjoy sandbox games, listening to relaxing AI generated music, or Minecraft clones, then TerraLink is actually pretty great. " },
                   { type: "p", text: "The player can shape the terrain by placing or removing blocks, choosing from 18 block types across four distinct block models (Cube, Slim Cube, Grass, and Dead Bush). " +
-                    "There's collision detection and solid, basic physics, plus a no-clip mode that lets you fly around like a camera. " +
+                    "There's collision detection and basic physics, plus a no-clip mode that lets you fly around and ignore collisions. " +
                     "Each block belongs to one of six sound-effect groups, so whether you're walking on, placing, or breaking a block, you'll feel fully immersed." },
                 ],
               },
@@ -251,10 +251,10 @@ export const PANELS = {
         swapMenuHeader: false,
         cards: [
             {
-                title: "Nothing yet...",
-                desc:  "",
-                img:   "/images/sad.png",
-                href:  "#"
+              title: "Nothing yet...",
+              desc:  "",
+              img:   "/images/sad.png",
+              href:  "#"
             },
         ],
     },
@@ -299,11 +299,11 @@ export const PANELS = {
         swapMenuHeader: false,
         cards: [
             {
-                title: "Nothing yet...",
-                desc:  "",
-                img:   "/images/sad.png",
-                href:  "#"
-            },
+              title: "Nothing yet...",
+              desc:  "",
+              img:   "/images/sad.png",
+              href:  "#"
+            }
         ],
     },
 };

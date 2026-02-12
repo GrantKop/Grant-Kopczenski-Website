@@ -99,6 +99,8 @@ export function mountPopupPanel(options = {}) {
     async function close() {
         if (!openState) return;
 
+        ++renderToken;
+
         openState = false;
         innerEl.classList.add("is-fading-out");
         await sleep(FADE_MS);

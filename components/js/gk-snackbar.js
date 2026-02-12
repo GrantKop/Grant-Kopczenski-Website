@@ -1,4 +1,4 @@
-// This component is for the dynamic popup menu I use over my image showcases
+// This component is for my dynamic snackbar menu
 
 import { mountPopupPanel } from "/components/js/gk-popup-panel.js";
 import { PANELS } from "/components/js/gk-panels.js";
@@ -22,40 +22,42 @@ export function mountPopupMenu(options = {}) {
     const shell = document.createElement('div');
     shell.className = 'gk-popup-shell';
     shell.setAttribute("data-docked", "0");
+    shell.setAttribute("data-expanded", "0");
     parent.appendChild(shell);
 
     const el = document.createElement('div');
     el.className = opts.className;
     el.setAttribute('aria-label', 'Popup menu');
     el.setAttribute('data-state', 'hidden');
+    el.setAttribute('data-intro', '1');
     el.setAttribute('data-subtitle', 'a');
     el.setAttribute('data-docked', '0');
     el.setAttribute('data-active-btn', '');
 
     const inner = document.createElement('div');
-    inner.className = 'gk-popup-menu__inner';
+    inner.className = 'gk-snackbar__inner';
 
     const left = document.createElement('div');
-    left.className = 'gk-popup-menu__left';
+    left.className = 'gk-snackbar__left';
 
     const titleEl = document.createElement('div');
-    titleEl.className = 'gk-popup-menu__title';
+    titleEl.className = 'gk-snackbar__title';
     titleEl.textContent = opts.title;
 
     const subtitleWrap = document.createElement('div');
-    subtitleWrap.className = 'gk-popup-menu__subtitle-wrap';
+    subtitleWrap.className = 'gk-snackbar__subtitle-wrap';
 
     const subtitleEl = document.createElement('div');
-    subtitleEl.className = 'gk-popup-menu__subtitle';
+    subtitleEl.className = 'gk-snackbar__subtitle';
     subtitleEl.textContent = opts.subtitle;
 
     const subtitleSecondaryEl = document.createElement('div');
-    subtitleSecondaryEl.className = 'gk-popup-menu__subtitle gk-popup-menu__subtitle--secondary';
+    subtitleSecondaryEl.className = 'gk-snackbar__subtitle gk-snackbar__subtitle--secondary';
     subtitleSecondaryEl.textContent = opts.subtitleSecondary;
     
     subtitleWrap.append(subtitleEl, subtitleSecondaryEl);
     const icons = document.createElement('div');
-    icons.className = "gk-popup-menu__icons";
+    icons.className = "gk-snackbar__icons";
     icons.innerHTML = `
       <a href="mailto:grant.kop9@gmail.com" title="Gmail" aria-label="Email">
         <i class="fas fa-envelope"></i>
@@ -75,13 +77,29 @@ export function mountPopupMenu(options = {}) {
     `;
     left.append(titleEl, subtitleWrap, icons);
 
+    const navRow = document.createElement('div');
+    navRow.className = 'gk-snackbar__navrow';
+
     const nav = document.createElement('nav');
-    nav.className = 'gk-popup-menu__nav';
+    nav.className = 'gk-snackbar__nav';
+    nav.setAttribute('aria-label', 'Navigation');
+
+    const moreBtn = document.createElement('button');
+    moreBtn.className = 'gk-snackbar__more';
+    moreBtn.type = 'button';
+    moreBtn.setAttribute('aria-label', 'More');
+    moreBtn.setAttribute('aria-expanded', 'false');
+
+    moreBtn.innerHTML = `<i class="fas fa-ellipsis-h"></i>`;
+
+    navRow.append(nav, moreBtn);
+
     nav.setAttribute('aria-label', 'Navigation');
 
     const panel = mountPopupPanel({
         parent: shell,
         className: 'gk-popup-panel',
+        onRoute: (path) => opts.onRoute?.(path),
     });
 
     let activeButtonId = '';
@@ -204,9 +222,35 @@ export function mountPopupMenu(options = {}) {
         activeButtonId = id || '';
         el.setAttribute('data-active-btn', activeButtonId);
 
-        [...nav.querySelectorAll('.gk-popup-menu__btn')].forEach(btn => {
+        [...nav.querySelectorAll('.gk-snackbar__btn')].forEach(btn => {
             btn.classList.toggle('is-active', btn.dataset.btnId === activeButtonId && panel.isOpen());
         });
+    }
+
+    function slugify(id) {
+      return "#" + String(id ?? "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-");
+    }
+
+    function hashForButtonId(id) {
+      switch (id) {
+        case "Projects": return "#projects";
+        case "Photos": return "#photos";
+        case "3D-Prints": return "#prints";
+        default: return slugify(id);
+      }
+    }
+
+    function setHash(hash) {
+      const url = new URL(window.location.href);
+      url.hash = hash || "";
+      history.replaceState(null, "", url);
+    }
+
+    function clearHash() {
+      setHash("");
     }
 
     function openPanel(buttonId, panelId) {
@@ -216,9 +260,12 @@ export function mountPopupMenu(options = {}) {
             return;
         }
 
+        setExpanded(false); 
         setDocked(true);
         setActiveButton(buttonId);
         panel.open(buttonId, nextCfg);
+
+        setHash(hashForButtonId(buttonId));
 
         const nextSwaps  = panelWantsHeaderSwap(nextCfg);
 
@@ -228,7 +275,7 @@ export function mountPopupMenu(options = {}) {
             restoreBaseHeader();
         }
 
-        [...nav.querySelectorAll('.gk-popup-menu__btn')].forEach(btn => {
+        [...nav.querySelectorAll('.gk-snackbar__btn')].forEach(btn => {
             btn.classList.toggle('is-active', btn.dataset.btnId === buttonId);
         });
     }
@@ -239,13 +286,15 @@ export function mountPopupMenu(options = {}) {
 
         panel.close();
         setDocked(false);
+        setExpanded(false);
         setActiveButton('');
+        clearHash();
 
         if (panelWantsHeaderSwap(cfg)) {
             restoreBaseHeader();
         }
 
-        [...nav.querySelectorAll('.gk-popup-menu__btn')].forEach(btn => {
+        [...nav.querySelectorAll('.gk-snackbar__btn')].forEach(btn => {
             btn.classList.remove('is-active');
         });
     }
@@ -262,7 +311,7 @@ export function mountPopupMenu(options = {}) {
 
         for (const b of btns) {
             const a = document.createElement('a');
-            a.className = 'gk-popup-menu__btn' + (b.primary ? ' is-primary' : '');
+            a.className = 'gk-snackbar__btn' + (b.primary ? ' is-primary' : '');
             a.href = b.href ?? '';
             a.textContent = b.label ?? '';
             a.dataset.btnId = b.id;
@@ -276,25 +325,32 @@ export function mountPopupMenu(options = {}) {
             else if (b.title) a.setAttribute('aria-label', b.title);
 
             const hasPanelId = typeof b.panelId === 'string' && b.panelId.length > 0;
+            const hasHref    = typeof b.href === "string" && b.href.length > 0;
             const hasHandler = typeof b.onClick === 'function';
 
-            if (hasPanelId || hasHandler) {
-                a.addEventListener('click', (e) => {
-                    e.preventDefault();
+            a.addEventListener('click', (e) => {
+                if (hasHref && !hasPanelId && !hasHandler) return;
 
-                    if (hasHandler) {
-                        b.onClick({
-                            toggle: () => togglePanel(b.id, b.panelId),
-                            open: () => openPanel(b.id, b.panelId),
-                            close: () => closePanel(),
-                        });
-                        return;
-                    }
+                e.preventDefault();
+
+                if (hasHandler) {
+                    b.onClick({
+                        toggle: () => togglePanel(b.id, b.panelId),
+                        open:   () => openPanel(b.id, b.panelId),
+                        close:  () => closePanel(),
+                    });
+                    return;
+                }
+                if (hasHref) {
+                    window.location.href = b.href;
+                    return;
+                }
+                if (hasPanelId) {
                     togglePanel(b.id, b.panelId);
-                });
-            }
+                }
+            });
 
-            const isClickable = b.href && b.href !== "#";
+            const isClickable = hasHref || hasPanelId || hasHandler;
             if (!isClickable) {
                 a.removeAttribute("href");
                 a.setAttribute("role", "article");
@@ -306,14 +362,14 @@ export function mountPopupMenu(options = {}) {
     renderButtons(opts.buttons);
 
     const right = document.createElement('div');
-    right.className = 'gk-popup-menu__right';
+    right.className = 'gk-snackbar__right';
 
     const footer = document.createElement('div');
-    footer.className = 'gk-popup-menu__footer';
+    footer.className = 'gk-snackbar__footer';
     const year = new Date().getFullYear();
     footer.textContent = `© 2025-${year} Grant Kopczenski. All rights reserved.`;
 
-    right.append(nav, footer);
+    right.append(navRow, footer);
     inner.append(left, right);
     el.appendChild(inner);
     shell.appendChild(el);
@@ -323,9 +379,37 @@ export function mountPopupMenu(options = {}) {
     let subtitleFirstTimer = null;
     let subtitleState = 'a';
 
+    moreBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (isDocked()) return;
+
+        setExpanded(shell.getAttribute('data-expanded') !== '1');
+    });
+
+    document.addEventListener('pointerdown', (e) => {
+        if (isDocked()) return;
+        if (shell.getAttribute('data-expanded') !== '1') return;
+
+        const within = shell.contains(e.target);
+        if (!within) setExpanded(false);
+    });
+
+    function setExpanded(expanded) {
+        shell.setAttribute('data-expanded', expanded ? '1' : '0');
+        moreBtn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    }
+    function isDocked() {
+        return shell.getAttribute('data-docked') === '1';
+    }
+
     function show() {
         el.setAttribute('data-state', 'visible');
         startSubtitleCycle();
+
+        window.setTimeout(() => {
+            el.removeAttribute('data-intro');
+        }, 2000);
     }
 
     function hide() {
@@ -335,9 +419,25 @@ export function mountPopupMenu(options = {}) {
     }
 
     function setText(title, subtitle, subtitleSecondary) {
-        titleEl.textContent = String(title ?? '');
-        subtitleEl.textContent = String(subtitle ?? '');
-        subtitleSecondaryEl.textContent = String(subtitleSecondary ?? '');
+        headerSwapToken++;
+
+        baseHeader.title = String(title ?? "");
+        baseHeader.subtitle = String(subtitle ?? "");
+        baseHeader.subtitleSecondary = String(subtitleSecondary ?? "");
+
+        headerIsSwapped = false;
+
+        titleEl.textContent = baseHeader.title;
+        subtitleEl.textContent = baseHeader.subtitle;
+        subtitleSecondaryEl.textContent = baseHeader.subtitleSecondary;
+
+        el.setAttribute("data-header-anim", "idle");
+        el.setAttribute("data-header-big", "0");
+
+        stopSubtitleCycle();
+        subtitleState = "a";
+        el.setAttribute("data-subtitle", "a");
+        startSubtitleCycle();
     }
 
     function setButtons(buttons) {
@@ -369,6 +469,7 @@ function normalize(opts) {
             ? buttons
             : [],
         parent: opts.parent,
-        className: typeof opts.className === 'string' ? opts.className : 'gk-popup-menu',
+        className: typeof opts.className === 'string' ? opts.className : 'gk-snackbar',
+        onRoute: typeof opts.onRoute === 'function' ? opts.onRoute : null,
     };
 }
