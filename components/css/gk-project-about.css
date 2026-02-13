@@ -18,6 +18,10 @@
   place-items: stretch stretch;
   position: relative;
 }
+.gk-project-about::before {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
 
 .gk-project-about__card {
   position: relative;
@@ -37,10 +41,7 @@
   border: 1px solid var(--gk-card-border) !important;
   box-shadow: var(--gk-card-shadow);
 
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
 
-  transform: translateZ(0);
 
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.35) rgba(255,255,255,0);
@@ -118,6 +119,7 @@
   letter-spacing: 0.35px;
   text-transform: uppercase;
   color: rgba(255,255,255,0.8);
+  font-weight: 700;
 }
 
 .gk-project-about__toc-list {
@@ -128,6 +130,7 @@
 .gk-project-about__toc-item {
   font: inherit;
   text-decoration: none;
+  font-weight: 300;
   font-size: 19px;
   line-height: 1.18;
   letter-spacing: 0.35px;
@@ -229,8 +232,49 @@
   letter-spacing: 0.35px;
   line-height: 1.28;
   padding-top: 3px;
-  color: rgba(255,255,255,0.90);
+  color: rgba(255,255,255,0.92);
   overflow-wrap: anywhere;
+}
+
+.gk-project-about__body :not(pre) h1 > code {
+  font-size: 53px;
+}
+.gk-project-about__body :not(pre) h2 > code {
+  font-size: 37px;
+}
+.gk-project-about__body :not(pre) h3 > code {
+  font-size: 31px;
+}
+.gk-project-about__body :not(pre) h4 > code {
+  font-size: 22px;
+}
+.gk-project-about__body :not(pre) p > code { 
+  font-size: 17px;
+}
+.gk-project-about__body :not(pre) ul > code,
+.gk-project-about__body :not(pre) li > code { 
+  font-size: 16px;
+}
+
+.gk-project-about__body :not(pre) > code {
+  display: inline-block;
+  padding: 1px 3px;
+  border-radius: 5px;
+
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.16);
+
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  line-height: 1.15;
+
+  color: rgba(255,255,255,0.92);
+  vertical-align: baseline;
+
+  white-space: break-spaces;
+
+  box-shadow: 0 10px 26px rgba(0,0,0,0.22);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 .gk-project-about__figure { margin: 14px 0 18px; }
@@ -255,7 +299,7 @@
   line-height: 1.2;
   display: grid;
   gap: 3px;
-  color: rgba(255,255,255,0.90);
+  color: rgba(255,255,255,0.92);
 }
 
 .gk-project-about__body li {
@@ -310,7 +354,7 @@
   appearance: none;
   border: 1px solid rgba(255,255,255,0.16);
   background: rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.90);
+  color: rgba(255,255,255,0.92);
   padding: 8px 10px;
   border-radius: 10px;
   cursor: pointer;
@@ -377,7 +421,7 @@
   font-size: 20px;
   letter-spacing: 0.5px;
   text-decoration: none;
-  color: rgba(255,255,255,0.90);
+  color: rgba(255,255,255,0.92);
   border: 1px solid rgba(255,255,255,0.14);
 
   background: rgba(255,255,255,0.06);

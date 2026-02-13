@@ -1,8 +1,47 @@
 import { loadTemplate } from "/components/js/gk-templates.js";
 
+function appendInline(el, text) {
+  const s = String(text ?? "");
+
+  const re = /(\*\*[^*]+\*\*|\*[^*\n]+\*|_[^_\n]+_|`[^`\n]+`)/g;
+
+  let last = 0;
+  for (const m of s.matchAll(re)) {
+    const i = m.index ?? 0;
+
+    if (i > last) el.appendChild(document.createTextNode(s.slice(last, i)));
+
+    const tok = m[0];
+
+    if (tok.startsWith("**")) {
+      const b = document.createElement("strong");
+      b.textContent = tok.slice(2, -2);
+      el.appendChild(b);
+    } else if (tok.startsWith("*")) {
+      const em = document.createElement("em");
+      em.textContent = tok.slice(1, -1);
+      el.appendChild(em);
+    } else if (tok.startsWith("_")) {
+      const em = document.createElement("em");
+      em.textContent = tok.slice(1, -1);
+      el.appendChild(em);
+    } else if (tok.startsWith("`")) {
+      const code = document.createElement("code");
+      code.textContent = tok.slice(1, -1);
+      el.appendChild(code);
+    } else {
+      el.appendChild(document.createTextNode(tok));
+    }
+
+    last = i + tok.length;
+  }
+
+  if (last < s.length) el.appendChild(document.createTextNode(s.slice(last)));
+}
+
 function makeEl(tag, text) {
   const el = document.createElement(tag);
-  if (text != null) el.textContent = String(text);
+  if (text != null && tag !== "code") appendInline(el, text);
   return el;
 }
 
