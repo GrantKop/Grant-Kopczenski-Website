@@ -11,14 +11,14 @@ export const PANELS = {
         options: [
             {
               title: "Large Software Projects",
-              subtitle: "Software projects I've spent more than a month working on.",
-              img: "/images/modules/terralink_project.png",
+              subtitle: "Software projects I've spent a few months working on.",
+              img: "/projects/terralink/images/terralink_house.png",
               panelId: "home_big_projects",
             },
             {
               title: "Small Software Projects",
               subtitle: "Software projects I've spent a few days or weeks working on.",
-              img: "/images/modules/jokers_in_game.png",
+              img: "/images/small-projects/jokers_in_game.png",
               panelId: "home_small_projects",
             },
             {
@@ -39,7 +39,7 @@ export const PANELS = {
             {
               title: "TerraLink",
               desc:  "Procedural voxel terrain engine built in C++ with OpenGL and OpenAL. Supports terrain streaming.",
-              img:   "/images/modules/terralink_project.png",
+              img:   "/projects/terralink/images/thumbs/terralink_house.png",
               href:  "/projects/terralink"
             },
             {
@@ -64,16 +64,34 @@ export const PANELS = {
         swapMenuHeader: true,
         cards: [
             {
+              title: "All my Scripts",
+              desc:  "A collection of all scripts I have made for any use.",
+              img:   "/images/small-projects/backup_mc.png",
+              panelId:  "all_scripts"
+            },
+            {
               title: "Is the Port Open",
               desc:  "A port checker program I wrote in Python to quickly check if my hosted ports were still up.",
-              img:   "/images/modules/itpo.png",
+              img:   "/images/small-projects/itpo.png",
               panelId:  "itpo_about"
             },
             {
               title: "Balatro Mod: Buddy Jokers",
               desc:  "Small mod for the indie game 'Balatro' that adds some of my friends in as Jokers.",
-              img:   "/images/modules/jokers_in_game.png",
+              img:   "/images/small-projects/jokers_in_game.png",
               panelId:  "buddy_jokers_about"
+            },
+            {
+              title: "Small Shell",
+              desc:  "Small shell with 3 built in functions and excecvp handeling for more. This was an assignment in college.",
+              img:   "/images/small-projects/random_commands.png",
+              panelId:  "smallsh_about"
+            },
+            {
+              title: "Hunt the Wumpus",
+              desc:  "Small terminal game I made in less than 2 hours as a challenge.",
+              img:   "/images/small-projects/wumpus_gold.png",
+              panelId:  "wumpus_about"
             },
             {
               title: "More to be presented :]",
@@ -158,7 +176,7 @@ export const PANELS = {
           {
             title: "Extra",
             items: [
-              { id: "tools", label: "Tools I Made" },
+              { id: "tools", label: "Other Tools" },
               { id: "future", label: "Future Plans"},
             ],
           },
@@ -308,9 +326,82 @@ export const PANELS = {
                   { type: "p", text: "For each chunk: " },
                   { type: "ul", items: ["Checks that the mesh is uploaded and valid", "Binds the chunk's VAO", "Draws the chunk using glDrawElements"] },
                   { type: "p", text: "The result is a real-time, block-based 3D world rendered from chunk mesh data." },
-                  
                 ]
               },
+              tools: {
+                blocks: [
+                  { type: "h2", text: "Texture Atlas Generation" },
+                  { type: "p", text: "I built a texture atlas system that scans a folder for PNG textures, packs them into a single square atlas image, and records where each texture lands. " +
+                    "It chooses an atlas grid size in powers of two, finds the largest texture, and uses that to compute the final atlas resolution. " +
+                    "Each texture is copied into its own tile slot in the atlas, and I store a map from texture name to its (x, y) offset so I can look it up later. " +
+                    "After the atlas is written to disk, I link my blocks to it by converting those pixel offsets into normalized UV coordinates and writing them into each block model's vertex texCoords, so every block pulls the correct part of the atlas at render time." },
+                  { type: "h2", text: "TerraLink Makefile" },
+                  { type: "code", 
+                    lang: "makefile", 
+                    filename: "Makefile",
+                    code:  String.raw`BUILD_DIR = build
+TOOLCHAIN_FILE = ../vcpkg/scripts/buildsystems/vcpkg.cmake
+
+.PHONY: configure build clean run vcpkg gdb debug installer
+
+setup: vcpkg configure build
+
+all: configure build
+
+rebuild: clean configure build
+
+configure:
+	@printf "\nConfiguring project...\n\n"
+	@cd $(BUILD_DIR) && cmake .. -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN_FILE)
+
+build:
+	@printf "\nBuilding project...\n\n"
+	@cd $(BUILD_DIR) && cmake --build .
+
+debug:
+	@printf "\nBuilding project in Debug mode...\n\n"
+	@cd $(BUILD_DIR) && cmake --debug-output .
+
+clean:
+	@if [ -d build ]; then \
+		/usr/bin/find build -mindepth 1 ! -name .gitkeep -delete; \
+	fi
+
+clear: clean
+
+run: build
+	@if [ -d build ] && [ -d build/Debug ]; then \
+		cd build/Debug && ./TerraLink.exe $(ARGS); \
+	fi
+
+vcpkg:
+	@git clone https://github.com/microsoft/vcpkg.git
+	@./vcpkg/bootstrap-vcpkg.bat
+	@cd vcpkg && ./vcpkg install glfw3 glad glm stb nlohmann-json zstd openal-soft libvorbis libogg
+
+gdb: 
+	@cd build/Debug && gdb TerraLink.exe
+
+installer:
+	@printf "\nConfiguring CMake for Release build...\n\n"
+	@cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN_FILE) -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=build/install
+	@printf "\nBuilding project in Release mode...\n\n"
+	@cmake --build build --config Release
+	@printf "\nInstalling project...\n\n"
+	@cmake --install build --config Release
+	@printf "\nProject installed to build/install\n"
+	@printf "\nCreating installer...\n\n"
+	@cd build && "C:/Program Files/CMake/bin/cpack.exe" -G NSIS
+
+install: installer
+`
+                  },
+                  { type: "p", text: "I used this Makefile as a shortcut layer over CMake. " +
+                    "It configures and builds into the build folder using my vcpkg toolchain, so dependencies come from vcpkg. " +
+                    "With my run command, I was able to easily launch and debug my project as I was creating it. " +
+                    "It also has an installer target that builds a Release version, installs it, and runs CPack to generate an NSIS installer." },
+                ]
+              }
             },
         links: [
             { text: "Wiki", href: "https://github.com/GrantKop/TerraLink/wiki" },
@@ -396,7 +487,18 @@ export const PANELS = {
           },
         ],
           pages: {
+            general: {
+              blocks: [
+                { type: "h2", text: "How I made it" },
+                { type: "p", text: "WIP page" },
+                { type: "img", 
+                  src: "/images/small-projects/jokers_in_game.png", 
+                  alt: "Buddy Jokers shown in jokers collection",
+                  caption: "All Buddy Jokers shown on the in-game collection screen",
+                },
+              ],
             },
+          },
         links: [
             { text: "Repository", href: "https://github.com/GrantKop/Buddy-Jokers-Balatro-Mod" },
             { text: "Steamodded GitHub", href: "https://github.com/Steamodded" },
@@ -417,10 +519,375 @@ export const PANELS = {
           },
         ],
           pages: {
+            general: {
+              blocks: [
+                { type: "h2", text: "General" },
+                { type: "p", text: "WIP page" },
+                { type: "img", 
+                  src: "/images/small-projects/itpo.png", 
+                  alt: "ITPO showing results for 5 different ports",
+                  caption: "All ports I host on my Ubuntu Machine being checked by ITPO",
+                },
+              ],
             },
+          },
         links: [
             { text: "Repository", href: "https://github.com/Fabrivis-Plugin/ITPO" },
             { text: "TKinter Documentation", href: "https://docs.python.org/3/library/tkinter.html" },
         ],
+    },
+    smallsh_about: {
+        type: "project_about",
+        menuTitle: "Small Shell",
+        menuSubtitle: "C | Signal Handeling | Process Forking",
+        swapMenuHeader: true,
+        toc: [
+          {
+            title: "Overview",
+            items: [
+              { id: "general", label: "General" },
+              { id: "built_commands", label: "Built-in Commands" },
+            ],
+          },
+        ],
+          pages: {
+            general: {
+              blocks: [
+                  { type: "h2", text: "About" },
+                  { type: "p", text: "This program acts as a small shell. It has 3 built-in functions, as well as a call to execvp to handle many more commands. This was an assignment for a class I took in college." },
+                  { type: "p", text: "The shell will also: " },
+                  { type: "ul", items: ["Handle redirection and background processes", "Replace '$$' with the PID of the shell", "CTRL C will not close the shell, it will instead kill the foreground process the shell is running]", "CTRL Z will put the shell in foreground mode, where all processes will run in the foreground, even if told to run in the background"] },
+
+                  { type: "h2", text: "Images" },
+                  { type: "img", 
+                  src: "/images/small-projects/pwd_command.png", 
+                  alt: "pwd command in action",
+                  caption: "Printing and changing the current working directory",
+                  },
+                  { type: "img", 
+                  src: "/images/small-projects/random_commands.png", 
+                  alt: "other commands in action",
+                  caption: "Several commands being handled by my shell",
+                  },
+                  { type: "img", 
+                  src: "/images/small-projects/echo_command.png", 
+                  alt: "echo command in action",
+                  caption: "Shell also handles output/input redirection",
+                  },
+              ],
+            },
+            built_commands: {
+              blocks: [
+                  { type: "h2", text: "All Built in commands" },
+                  { type: "p", text: "Any other command not listed here (ls, cat, grep, echo, etc.) are treated as an external command and run through createChild() -> fork() -> execvp(), with support for '<', '>', and '&'" },
+
+                  { type: "h3", text: "Change Directory: 'cd'" },
+                  { type: "ul", items: ["If the user types cd <path>, it calls chdir(<path>)", "If the user types just cd, it switches to the user's home directory via getenv(\"HOME\")", "if chdir fails, it will print an error message"] },
+                  
+                  { type: "h3", text: "Status: 'status'" },
+                  { type: "ul", items: ["Reports the exit status / signal of last foreground command", "If the process was killed by a signal, it will print 'Terminated by signal N", "Uses the global exitCode that gets updated when the parent does waitpid(spawnPid, &exitCode, 0) for foreground commands"] },
+
+                  { type: "h3", text: "Exit: 'exit'" },
+                  { type: "ul", items: ["Ends the shell process immediately"] },               
+              ]
+            }
+          },
+        links: [
+            { text: "Repository", href: "https://github.com/GrantKop/Small-Shell" },
+        ],
+    },
+    wumpus_about: {
+        type: "project_about",
+        menuTitle: "Hunt the Wumpus",
+        menuSubtitle: "C++",
+        swapMenuHeader: true,
+        toc: [
+          {
+            title: "Overview",
+            items: [
+              { id: "general", label: "General" },
+            ],
+          },
+        ],
+          pages: {
+            generals: {
+              blocks: [
+              ],
+            },
+          },
+        links: [
+            { text: "Repository", href: "https://github.com/GrantKop/Dungeon-Crawler-Game" },
+            { text: "Wiki History", href: "https://en.wikipedia.org/wiki/Hunt_the_Wumpus" },
+        ],
+    },
+    all_scripts: {
+        type: "project_about",
+        menuTitle: "Scripting",
+        menuSubtitle: "Bash | Makefile", // PowerShell | Python
+        swapMenuHeader: true,
+        toc: [
+          {
+            title: "Sections",
+            items: [
+              { id: "minecraft", label: "Minecraft" },
+              { id: "website", label: "My Website" },
+              { id: "terralink", label: "TerraLink" },
+              { id: "other", label: "Other" },
+            ],
+          },
+        ],
+          pages: {
+            minecraft: {
+              blocks: [
+                { type: "h2", text: "Start Server" },
+                { type: "code", 
+                  lang: "bash", 
+                  filename: "start_server.sh",
+                  code: `#!/bin/bash
+
+cd ~/ssd/minecraft/modded/Current_Server
+
+while true; do
+	if [ -f "stop_server" ]; then
+		echo "Stop file found. Exiting reboot loop."
+		rm stop_server
+		break
+	fi
+
+	echo "Starting server..."
+	./run.sh
+
+	echo "Server crashed or stopped. Restarting in 5 seconds..."
+	sleep 5
+done
+
+tmux wait-for -S mc_done
+`
+                },
+                { type: "p", text: "This script will call the 'run.sh' script that Minecraft auto-generates in your directory. " +
+                  "It runs in a persistent loop, so if the server crashes or reboots, the server automatically restarts without needing my attention. " +
+                  "When I need to stop the server, I have a command to create a file in the directory and the script detects it and exits the loop. " +
+                  "I have a command that creates a tmux session labeled 'minecraft' that runs this script, so I can easily find the console whenever I need." },
+                { type: "h2", text: "Backup World" },
+                { type: "code", 
+                  lang: "bash", 
+                  filename: "backup_world.sh",
+                  code: `#!/bin/bash
+
+WORLD_DIR="world"
+BACKUP_DIR="backups"
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+BACKUP_FILE="$BACKUP_DIR/world_backup_$TIMESTAMP.tar.gz"
+
+cd ~/ssd/minecraft/modded/Current_Server
+
+if tmux has-session -t minecraft 2>/dev/null; then
+	tmux send-keys -t minecraft "say Backing up the world... Server may lag a bit until complete" C-m
+	tmux send-keys -t minecraft "save-off" C-m
+	tmux send-keys -t minecraft "save-all" C-m
+	sleep 5
+fi
+
+if [ -d "world" ]; then
+	tar -czf "$BACKUP_FILE" "$WORLD_DIR"
+fi
+
+if tmux has-session -t minecraft 2>/dev/null; then
+	tmux send-keys -t minecraft "save-on" C-m
+	tmux send-keys -t minecraft "say Backup complete!" C-m
+fi
+
+find "$BACKUP_DIR" -type f -name "*.tar.gz" -mmin +2160 -exec rm {} \;
+
+echo "World backup complete: $BACKUP_FILE"
+`
+                },
+                { type: "p", text: "I run this script via cron on my Ubuntu server. It executes every six hours (12pm, 6pm, 12am). " +
+                  "Each run compresses the world file and saves it to a backups directory with a date/time stamp. " +
+                  "It also prunes backups older than a configured retention period to prevent unnecessary disk usage. " + 
+                  "Before starting, it also notifies players that a backup is in progress in case the server performance is affected." },
+                { type: "h2", text: "Restart Server" },
+                { type: "code", 
+                  lang: "bash", 
+                  filename: "restart_server.sh",
+                  code: `#!/bin/bash
+
+if tmux has-session -t minecraft 2>/dev/null; then
+	tmux send-keys -t minecraft "say Server rebooting in 60 seconds..." C-m
+	sleep 30
+	tmux send-keys -t minecraft "say Server rebooting in 30 seconds..." C-m
+	sleep 30
+	tmux send-keys -t minecraft "say Server rebooting..." C-m
+	sleep 1
+	tmux send-keys -t minecraft "stop" C-m
+fi
+`
+                },
+                { type: "p", text: "I also run this script via cron on my Ubuntu server. Typically it executes 3 days a week (MWF), at 5am when (probably) nobody is online. " +
+                  "It will notify players that the server is about to be restarted, then it sends the 'stop' command to the Minecraft console for a clean shutdown. " + 
+                  "Once shutdown, my start-up script kicks in and automatically restarts the server." },
+              ],
+            },
+            website: {
+              blocks: [
+                { type: "h2", text: "Make Thumbs" },
+                { type: "code", 
+                  lang: "bash", 
+                  filename: "make-thumbs.sh",
+                  code: String.raw`#!/usr/bin/env bash
+set -euo pipefail
+shopt -s nullglob nocaseglob
+
+ROOT="\${1:-.}"
+MAX_W=900
+JPEG_Q=65
+
+find "$ROOT" -type d -name "images" -print0 | while IFS= read -r -d '' IMGDIR; do
+        THUMBDIR="$IMGDIR/thumbs"
+        mkdir -p "$THUMBDIR"
+
+        echo "==> $IMGDIR"
+
+        for SRC in "$IMGDIR"/*.jpg "$IMGDIR"/*.jpeg "$IMGDIR"/*.png "$IMGDIR"/*.webp; do
+                [[ -f "$SRC" ]] || continue
+
+                base="$(basename "$SRC")"
+                out="$THUMBDIR/$base"
+
+                if [[ -f "$out" && "$out" -nt "$SRC" ]]; then
+                        continue
+                fi
+
+                convert "$SRC" \
+                        -auto-orient \
+                        -resize "\${MAX_W}x\${MAX_W}>" \
+                        -strip \
+                        -interlace Plane \
+                        -sampling-factor 4:2:0 \
+                        -quality "$JPEG_Q" \
+                        "$out"
+                done
+        done
+
+echo "make-thumbs.sh done."
+`
+                },
+                { type: "p", text: "This script scans for folders named 'images' (starting at ROOT, which defaults to the current directory) and creates an 'images/thumbs' folder in each one. " +
+                  "It then generates resized thumbnails for every .jpg/.jpeg/.png/.webp file, saving them into the thumbs folder with the same filename. " +
+                  "If a thumbnail already exists and is newer than the original, it skips that file. " +
+                  "Thumbnails are made with ImageMagick 'convert' using auto-rotation, stripped metadata, a max size of 900px (no upscaling), and quality set to 65 to reduce file size. " + 
+                  "I use this to create lower quality images on my website for slower connections to look smoother." },
+              ],
+            },
+            terralink: {
+              blocks: [
+                { type: "h2", text: "TerraLink Makefile" },
+                { type: "code", 
+                  lang: "makefile", 
+                  filename: "Makefile",
+                  code:  String.raw`BUILD_DIR = build
+TOOLCHAIN_FILE = ../vcpkg/scripts/buildsystems/vcpkg.cmake
+
+.PHONY: configure build clean run vcpkg gdb debug installer
+
+setup: vcpkg configure build
+
+all: configure build
+
+rebuild: clean configure build
+
+configure:
+	@printf "\nConfiguring project...\n\n"
+	@cd $(BUILD_DIR) && cmake .. -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN_FILE)
+
+build:
+	@printf "\nBuilding project...\n\n"
+	@cd $(BUILD_DIR) && cmake --build .
+
+debug:
+	@printf "\nBuilding project in Debug mode...\n\n"
+	@cd $(BUILD_DIR) && cmake --debug-output .
+
+clean:
+	@if [ -d build ]; then \
+		/usr/bin/find build -mindepth 1 ! -name .gitkeep -delete; \
+	fi
+
+clear: clean
+
+run: build
+	@if [ -d build ] && [ -d build/Debug ]; then \
+		cd build/Debug && ./TerraLink.exe $(ARGS); \
+	fi
+
+vcpkg:
+	@git clone https://github.com/microsoft/vcpkg.git
+	@./vcpkg/bootstrap-vcpkg.bat
+	@cd vcpkg && ./vcpkg install glfw3 glad glm stb nlohmann-json zstd openal-soft libvorbis libogg
+
+gdb: 
+	@cd build/Debug && gdb TerraLink.exe
+
+installer:
+	@printf "\nConfiguring CMake for Release build...\n\n"
+	@cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN_FILE) -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=build/install
+	@printf "\nBuilding project in Release mode...\n\n"
+	@cmake --build build --config Release
+	@printf "\nInstalling project...\n\n"
+	@cmake --install build --config Release
+	@printf "\nProject installed to build/install\n"
+	@printf "\nCreating installer...\n\n"
+	@cd build && "C:/Program Files/CMake/bin/cpack.exe" -G NSIS
+
+install: installer
+`
+                },
+                { type: "p", text: "I used this Makefile for my TerraLink project as a shortcut layer over CMake. " +
+                  "It configures and builds into the build folder using my vcpkg toolchain, so dependencies come from vcpkg. " +
+                  "With my run command, I was able to easily launch and debug my project as I was creating it. " +
+                  "It also has an installer target that builds a Release version, installs it, and runs CPack to generate an NSIS installer." },
+              ],
+            },
+            other: {
+              blocks: [
+                { type: "h2", text: "Bash Aliases" },
+                { type: "code", 
+                  lang: "bash", 
+                  filename: ".bash_aliases",
+                  code: `# All aliases used for my Ubuntu server
+alias zedit='vim ~/.bash_aliases'
+alias zu='source ~/.bash_aliases'
+alias lnxupd='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y'
+alias drvpt='lsblk; echo; df -hT'
+
+# Website Commands
+alias mkthumbs='sudo /bin/make-thumbs.sh /var/www/grantkopczenski'
+
+# Minecraft
+alias modmc='cd ~/ssd/minecraft/modded'
+alias vanmc='cd ~/ssd/minecraft/vanilla'
+
+alias startmc='tmux new-session -d -s minecraft bash -c "/home/grant/ssd/minecraft/modded/current_server/start_server.sh"'
+alias stopmc='touch "/home/grant/ssd/minecraft/modded/current_server/stop_server" && tmux send-keys -t minecraft "stop" C-m && tmux wait-for mc_done && tmux kill-session -t minecraft'
+alias backupmc='~/ssd/minecraft/modded/current_server/backup_world.sh'
+alias grabmc='tmux attach -t minecraft'
+alias startvanillamc='java -Xms4G -Xmx10G -jar server1.21.9.jar -nogui'
+alias startpxmon='tmux new-session -d -s minecraft bash -c "/home/grant/ssd/minecraft/modded/pixelmon/start_pixelmon_server.sh"'
+alias stoppxmon='touch "/home/grant/ssd/minecraft/modded/pixelmon/stop_server" && tmux send-keys -t minecraft "stop" C-m && tmux wait-for mc_done && tmux kill-session -t minecraft'
+
+# Terraria
+alias starttr='tmux new-session -d -s terraria bash -c "/home/grant/ssd/tmodloader/start-tModLoaderServer.sh"'
+alias stoptr='tmux send-keys -t terraria "exit"'
+alias grabtr='tmux attach -t terraria'
+
+# Hytale
+alias startht='tmux new-session -d -s hytale bash'
+alias grabht='tmux attach -t hytale'
+`
+                },
+                { type: "p", text: "These are my current Ubuntu server aliases, which are shorthand commands for the things I most commonly do/use." },
+              ],
+            },
+          },
     },
 };

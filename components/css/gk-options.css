@@ -46,15 +46,20 @@
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   grid-template-areas:
-    "a c"
-    "b c";
+    "a b"
+    "a c";
 }
 .gk-options[data-count="4"] {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   grid-template-areas:
-    "a b"
-    "c d";
+    "a c"
+    "b d";
+}
+
+.gk-options[data-count="3"] .gk-option:nth-child(2) .gk-option__overlay,
+.gk-options[data-count="3"] .gk-option:nth-child(3) .gk-option__overlay {
+  padding: 10px;
 }
 
 .gk-options > .gk-option:nth-child(1){ grid-area: a; }

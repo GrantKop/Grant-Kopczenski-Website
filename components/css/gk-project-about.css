@@ -233,6 +233,20 @@
   overflow-wrap: anywhere;
 }
 
+.gk-project-about__figure { margin: 14px 0 18px; }
+.gk-project-about__img {
+  display: block;
+  width: 100%;
+  max-width: 900px;
+  height: auto;
+  border-radius: 14px;
+}
+.gk-project-about__caption {
+  margin-top: 7px;
+  font-size: 17.5px;
+  opacity: 0.85;
+}
+
 .gk-project-about__body ul {
   margin: 0;
   padding-left: 35px;
@@ -247,6 +261,94 @@
 .gk-project-about__body li {
   line-height: 1.3;
   margin: 0;
+}
+
+.gk-project-about__code {
+  margin: 14px 0 18px;
+  max-width: 980px;
+}
+
+.gk-project-about__code-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+
+  background: rgba(10, 12, 18, 0.55);
+}
+
+.gk-project-about__code-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.gk-project-about__code-name {
+  font-size: 16px;
+  letter-spacing: 0.35px;
+  color: rgba(255,255,255,0.92);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 58vw;
+}
+
+.gk-project-about__code-lang {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: rgba(255,255,255,0.62);
+}
+
+.gk-project-about__code-copy {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.90);
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+
+  transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+}
+.gk-project-about__code-copy:hover {
+  transform: translateY(-1px);
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.24);
+}
+.gk-project-about__code-copy:active {
+  transform: translateY(0);
+  background: rgba(255,255,255,0.14);
+  border-color: rgba(255,255,255,0.30);
+}
+
+.gk-project-about__pre {
+  margin: 0;
+  padding: 14px 14px;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 0 0 12px 12px;
+
+  background: rgba(10, 12, 18, 0.40);
+
+  overflow: auto;
+  min-height: 0;
+
+  font-size: 15px;
+  line-height: 1.35;
+  letter-spacing: 0.2px;
+}
+
+.gk-project-about__code-inner {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  color: rgba(255,255,255,0.92);
+  tab-size: 2;
+  white-space: pre;
 }
 
 .gk-project-about__content {
