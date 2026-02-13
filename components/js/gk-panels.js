@@ -65,7 +65,7 @@ export const PANELS = {
         cards: [
             {
               title: "All my Scripts",
-              desc:  "A collection of all scripts I have made for any use.",
+              desc:  "A collection of every script I've ever made.",
               img:   "/images/small-projects/backup_mc.png",
               panelId:  "all_scripts"
             },
@@ -77,19 +77,19 @@ export const PANELS = {
             },
             {
               title: "Balatro Mod: Buddy Jokers",
-              desc:  "Small mod for the indie game 'Balatro' that adds some of my friends in as Jokers.",
+              desc:  "Mod for the indie game 'Balatro' that adds some of my friends in as Jokers.",
               img:   "/images/small-projects/jokers_in_game.png",
               panelId:  "buddy_jokers_about"
             },
             {
               title: "Small Shell",
-              desc:  "Small shell with 3 built in functions and calls execvp for handling more. This was an assignment in college.",
+              desc:  "Custom terminal with 3 built in functions and calls execvp for handling many more.",
               img:   "/images/small-projects/random_commands.png",
               panelId:  "smallsh_about"
             },
             {
               title: "Hunt the Wumpus",
-              desc:  "Small terminal game I made in less than 2 hours as a challenge.",
+              desc:  "Terminal game I made in less than 2 hours as a challenge.",
               img:   "/images/small-projects/wumpus_gold.png",
               panelId:  "wumpus_about"
             },
@@ -476,7 +476,7 @@ install: installer
     buddy_jokers_about: {
         type: "project_about",
         menuTitle: "Balatro Mod: Buddy Jokers",
-        menuSubtitle: "Lua | Steamodded API | Custom Content",
+        menuSubtitle: "Lua | Steamodded API",
         swapMenuHeader: true,
         toc: [
           {
@@ -508,7 +508,7 @@ install: installer
     itpo_about: {
         type: "project_about",
         menuTitle: "Is the Port Open",
-        menuSubtitle: "Python | TCP Port Scanner | CustomTkinter GUI",
+        menuSubtitle: "Python | TCP Port Scanner | CustomTkinter",
         swapMenuHeader: true,
         toc: [
           {
@@ -558,7 +558,7 @@ install: installer
                   { type: "p", text: "The shell will also: " },
                   { type: "ul", items: ["Handle redirection and background processes", "Replace '$$' with the PID of the shell", "CTRL C will not close the shell, it will instead kill the foreground process the shell is running]", "CTRL Z will put the shell in foreground mode, where all processes will run in the foreground, even if told to run in the background"] },
 
-                  { type: "h2", text: "Images" },
+                  { type: "h2", text: "Outputs" },
                   { type: "img", 
                   src: "/images/small-projects/pwd_command.png", 
                   alt: "pwd command in action",
@@ -582,13 +582,13 @@ install: installer
                   { type: "p", text: "Any other command not listed here (ls, cat, grep, echo, etc.) are treated as an external command and run through createChild() -> fork() -> execvp(), with support for '<', '>', and '&'" },
 
                   { type: "h3", text: "Change Directory: 'cd'" },
-                  { type: "ul", items: ["If the user types cd <path>, it calls chdir(<path>)", "If the user types just cd, it switches to the user's home directory via getenv(\"HOME\")", "if chdir fails, it will print an error message"] },
+                  { type: "ul", items: ["If the user types cd <path>, it will change the current directory to <path>", "If the user types just cd, it switches to the user's home directory via getenv(\"HOME\")", "if chdir() fails, it will print an error message"] },
                   
                   { type: "h3", text: "Status: 'status'" },
-                  { type: "ul", items: ["Reports the exit status / signal of last foreground command", "If the process was killed by a signal, it will print 'Terminated by signal N", "Uses the global exitCode that gets updated when the parent does waitpid(spawnPid, &exitCode, 0) for foreground commands"] },
+                  { type: "ul", items: ["Reports the exit status / signal of last foreground command", "If the process was killed by a signal, it will print 'Terminated by signal N'", "Uses the global exitCode that gets updated when the parent does waitpid(spawnPid, &exitCode, 0) for foreground commands"] },
 
                   { type: "h3", text: "Exit: 'exit'" },
-                  { type: "ul", items: ["Ends the shell process immediately"] },               
+                  { type: "ul", items: ["Ends the shell process immediately and exits to the actual terminal"] },               
               ]
             }
           },
@@ -606,6 +606,7 @@ install: installer
             title: "Overview",
             items: [
               { id: "general", label: "General" },
+              { id: "events", label: "Events" },
             ],
           },
         ],
@@ -617,7 +618,7 @@ install: installer
           },
         links: [
             { text: "Repository", href: "https://github.com/GrantKop/Dungeon-Crawler-Game" },
-            { text: "Wiki History", href: "https://en.wikipedia.org/wiki/Hunt_the_Wumpus" },
+            { text: "Wikipedia", href: "https://en.wikipedia.org/wiki/Hunt_the_Wumpus" },
         ],
     },
     all_scripts: {
