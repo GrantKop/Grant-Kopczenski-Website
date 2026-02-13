@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="/components/css/gk-popup-panel.css">
   <link rel="stylesheet" href="/components/css/gk-cards.css">
   <link rel="stylesheet" href="/components/css/gk-project-about.css">
+  <link rel="stylesheet" href="/components/css/gk-options.css">
 
   <title>Grant Kopczenski | Project Portfolio | Photograph Album</title>
   <style>
@@ -46,7 +47,7 @@
       subtitleCycleMs: 8000,
       subtitleFirstCycleMs: 5500,
       buttons: [
-        { id: "Projects", label: "Projects", title: "Software Projects", panelId: "home_projects" },
+        { id: "Projects-All", label: "Projects", title: "Software Projects", panelId: "home_projects_all" },
         { id: "Photos", label: "Photos", title: "Photo Album", panelId: "home_photos" },
         { id: "3D-Prints", label: "3D Prints", title: "3D Designs and Files", panelId: "home_prints" },
       ],
@@ -63,7 +64,7 @@
         menu.el.querySelector(`[data-btn-id="${id}"]`)?.click();
       };
 
-      if (h === "#projects") tryOpen("Projects");
+      if (h === "#projects" || h === "#projects-all") tryOpen("Projects-All");
       else if (h === "#photos") tryOpen("Photos");
       else if (h === "#prints" || h === "#3d-prints") tryOpen("3D-Prints");
     };

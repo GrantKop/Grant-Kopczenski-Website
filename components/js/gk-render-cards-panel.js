@@ -1,6 +1,6 @@
 import { loadTemplate } from "/components/js/gk-templates.js";
 
-export async function renderCardsPanel(panelConfig, { panelEl }) {
+export async function renderCardsPanel(panelConfig, { panelEl, panel }) {
     const MAX_PER_ROW = 4;
 
     const pad = document.createElement("div");
@@ -50,11 +50,32 @@ export async function renderCardsPanel(panelConfig, { panelEl }) {
             desc?.remove();
         }
 
-        const isClickable = c.href && c.href !== "#";
-        if (!isClickable) {
-            cardEl.removeAttribute("href");
-            cardEl.setAttribute("role", "article");
-            cardEl.style.cursor = "default";
+        const hasPanelId = typeof c.panelId === "string" && c.panelId.length > 0;
+        const hasHref    = typeof c.href === "string" && c.href.length > 0 && c.href !== "#";
+
+        if (hasPanelId) {
+          cardEl.removeAttribute("href");
+          cardEl.setAttribute("role", "button");
+          cardEl.style.cursor = "pointer";
+
+          cardEl.addEventListener("click", (e) => {
+            e.preventDefault();
+            panel?.routeTo(c.panelId);
+          });
+
+          cardEl.tabIndex = 0;
+          cardEl.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              panel?.routeTo(c.panelId);
+            }
+          });
+        } else if (hasHref) {
+          cardEl.href = c.href;
+        } else {
+          cardEl.removeAttribute("href");
+          cardEl.setAttribute("role", "article");
+          cardEl.style.cursor = "default";
         }
 
         grid.appendChild(cardEl);

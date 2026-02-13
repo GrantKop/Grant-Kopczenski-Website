@@ -97,12 +97,15 @@ export function mountPopupMenu(options = {}) {
     nav.setAttribute('aria-label', 'Navigation');
 
     const panel = mountPopupPanel({
-        parent: shell,
-        className: 'gk-popup-panel',
-        onRoute: (path) => opts.onRoute?.(path),
+      parent: shell,
+      className: 'gk-popup-panel',
+      onRoute: ({ panelId, buttonId }) => {
+        openPanel(activeButtonId || buttonId || panelId, panelId);
+      },
     });
 
     let activeButtonId = '';
+    let currentPanelId = '';
     const buttonToPanelId = new Map();
 
     const baseHeader = {
@@ -236,7 +239,7 @@ export function mountPopupMenu(options = {}) {
 
     function hashForButtonId(id) {
       switch (id) {
-        case "Projects": return "#projects";
+        case "Projects-All": return "#projects";
         case "Photos": return "#photos";
         case "3D-Prints": return "#prints";
         default: return slugify(id);
@@ -259,6 +262,8 @@ export function mountPopupMenu(options = {}) {
             console.warn("No panel config found for:", panelId);
             return;
         }
+
+        currentPanelId = panelId;
 
         setExpanded(false); 
         setDocked(true);
@@ -285,6 +290,8 @@ export function mountPopupMenu(options = {}) {
         const cfg = panelId ? PANELS[panelId] : null;
 
         panel.close();
+        currentPanelId = '';
+
         setDocked(false);
         setExpanded(false);
         setActiveButton('');
@@ -300,9 +307,19 @@ export function mountPopupMenu(options = {}) {
     }
 
     function togglePanel(buttonId, panelId) {
-        const isSame = panel.isOpen() && activeButtonId === buttonId;
-        if (isSame) closePanel();
-        else openPanel(buttonId, panelId);
+      const targetPanelId = panelId;
+      const isSameButton = panel.isOpen() && activeButtonId === buttonId;   
+
+      if (isSameButton) {
+        if (currentPanelId && currentPanelId !== targetPanelId) {
+          openPanel(buttonId, targetPanelId);
+        } else {
+          closePanel();
+        }
+        return;
+      } 
+
+      openPanel(buttonId, targetPanelId);
     }
 
     function renderButtons(btns) {
@@ -312,7 +329,11 @@ export function mountPopupMenu(options = {}) {
         for (const b of btns) {
             const a = document.createElement('a');
             a.className = 'gk-snackbar__btn' + (b.primary ? ' is-primary' : '');
-            a.href = b.href ?? '';
+            if (typeof b.href === "string" && b.href.length > 0) {
+              a.href = b.href;
+            } else {
+              a.removeAttribute("href");
+            }
             a.textContent = b.label ?? '';
             a.dataset.btnId = b.id;
 

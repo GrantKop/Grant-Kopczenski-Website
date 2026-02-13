@@ -2,24 +2,99 @@
 
 export const PANELS = {
     // --------------------- Home Panels ----------------------------------------------------------------
-    // Projects home
-    home_projects: {
+    // Projects 
+    home_projects_all: {
+        type: "options",
+        menuTitle: "All projects",
+        menuSubtitle: "Select a group of projects",
+        swapMenuHeader: true,
+        options: [
+            {
+              title: "Large Software Projects",
+              subtitle: "Software projects I've spent more than a month working on.",
+              img: "/images/modules/terralink_project.png",
+              panelId: "home_big_projects",
+            },
+            {
+              title: "Small Software Projects",
+              subtitle: "Software projects I've spent a few days or weeks working on.",
+              img: "/images/modules/jokers_in_game.png",
+              panelId: "home_small_projects",
+            },
+            {
+              title: "Hardware Projects",
+              subtitle: "Projects using Raspberry Pi, breadboards, etc.",
+              img: "/images/modules/electronics.jpg",
+              panelId: "home_hardware_projects",
+            },
+        ],
+    },
+    // big
+    home_big_projects: {
         type: "cards",
-        menuTitle: "Software Projects",
+        menuTitle: "Large Software Projects",
         menuSubtitle: "Click on a card to learn more",
         swapMenuHeader: true,
         cards: [
             {
               title: "TerraLink",
               desc:  "Procedural voxel terrain engine built in C++ with OpenGL and OpenAL. Supports terrain streaming.",
-              img:   "/images/terralink_project.png",
+              img:   "/images/modules/terralink_project.png",
               href:  "/projects/terralink"
             },
             {
               title: "Senior Capstone",
               desc:  "Immersive space flight simulator built in Unreal Engine 5. Developed as my senior capstone project with a team.",
-              img:   "/images/capstone_project.png",
+              img:   "/images/modules/capstone_project.png",
               href:  "/projects/capstone"
+            },
+            {
+              title: "More to be come :]",
+              desc:  "",
+              img:   "/images/modules/happy.png",
+              href:  "#"
+            },
+        ],
+    },
+    // small
+    home_small_projects: {
+        type: "cards",
+        menuTitle: "Small Software Projects",
+        menuSubtitle: "Click on a card to learn more",
+        swapMenuHeader: true,
+        cards: [
+            {
+              title: "Is the Port Open",
+              desc:  "A port checker program I wrote in Python to quickly check if my hosted ports were still up.",
+              img:   "/images/modules/itpo.png",
+              panelId:  "itpo_about"
+            },
+            {
+              title: "Balatro Mod: Buddy Jokers",
+              desc:  "Small mod for the indie game 'Balatro' that adds some of my friends in as Jokers.",
+              img:   "/images/modules/jokers_in_game.png",
+              panelId:  "buddy_jokers_about"
+            },
+            {
+              title: "More to be presented :]",
+              desc:  "",
+              img:   "/images/modules/happy.png",
+              href:  "#"
+            },
+        ],
+    },
+    // hardware
+    home_hardware_projects: {
+        type: "cards",
+        menuTitle: "Hardware Projects",
+        menuSubtitle: "Click on a card to learn more",
+        swapMenuHeader: true,
+        cards: [
+            {
+              title: "Nothing yet...",
+              desc:  "Coming soon",
+              img:   "/images/modules/sad.png",
+              href:  "#"
             },
         ],
     },
@@ -32,8 +107,8 @@ export const PANELS = {
         cards: [
             {
               title: "Nothing yet...",
-              desc:  "",
-              img:   "/images/sad.png",
+              desc:  "Coming soon",
+              img:   "/images/modules/sad.png",
               href:  "#"
             },
         ],
@@ -47,8 +122,8 @@ export const PANELS = {
         cards: [
             {
               title: "Nothing yet...",
-              desc:  "",
-              img:   "/images/sad.png",
+              desc:  "Coming soon",
+              img:   "/images/modules/sad.png",
               href:  "#"
             },
         ],
@@ -252,8 +327,8 @@ export const PANELS = {
         cards: [
             {
               title: "Nothing yet...",
-              desc:  "",
-              img:   "/images/sad.png",
+              desc:  "Coming soon",
+              img:   "/images/modules/sad.png",
               href:  "#"
             },
         ],
@@ -300,10 +375,52 @@ export const PANELS = {
         cards: [
             {
               title: "Nothing yet...",
-              desc:  "",
-              img:   "/images/sad.png",
+              desc:  "Coming soon",
+              img:   "/images/modules/sad.png",
               href:  "#"
             }
+        ],
+    },
+    // Buddy Jokers about
+    buddy_jokers_about: {
+        type: "project_about",
+        menuTitle: "Balatro Mod: Buddy Jokers",
+        menuSubtitle: "Lua | Steamodded API | Custom Content",
+        swapMenuHeader: true,
+        toc: [
+          {
+            title: "Overview",
+            items: [
+              { id: "general", label: "General" },
+            ],
+          },
+        ],
+          pages: {
+            },
+        links: [
+            { text: "Repository", href: "https://github.com/GrantKop/Buddy-Jokers-Balatro-Mod" },
+            { text: "Steamodded GitHub", href: "https://github.com/Steamodded" },
+        ],
+    },
+    // Is The Port Open About
+    itpo_about: {
+        type: "project_about",
+        menuTitle: "Is the Port Open",
+        menuSubtitle: "Python | TCP Port Scanner | CustomTkinter GUI",
+        swapMenuHeader: true,
+        toc: [
+          {
+            title: "Overview",
+            items: [
+              { id: "general", label: "General" },
+            ],
+          },
+        ],
+          pages: {
+            },
+        links: [
+            { text: "Repository", href: "https://github.com/Fabrivis-Plugin/ITPO" },
+            { text: "TKinter Documentation", href: "https://docs.python.org/3/library/tkinter.html" },
         ],
     },
 };

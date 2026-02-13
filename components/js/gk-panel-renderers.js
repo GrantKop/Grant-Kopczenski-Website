@@ -1,9 +1,11 @@
 import { renderCardsPanel } from "/components/js/gk-render-cards-panel.js";
 import { renderProjectAboutPanel } from "/components/js/gk-render-project-about-panel.js";
+import { renderOptionsPanel } from "/components/js/gk-render-options-panel.js";
 
 const RENDERERS = {
     cards: renderCardsPanel,
     project_about: renderProjectAboutPanel,
+    options: renderOptionsPanel,
 };
 
 export async function renderPanelByType(panelConfig, ctx) {

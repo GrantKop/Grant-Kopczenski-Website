@@ -11,6 +11,7 @@ import { renderPanelByType } from "/components/js/gk-panel-renderers.js";
 
 export function mountPopupPanel(options = {}) {
     const parent = options.parent ?? document.body;
+    const onRoute = typeof options.onRoute === "function" ? options.onRoute : null;
 
     const panelEl = document.createElement('div');
     panelEl.className = options.className ?? 'gk-popup-panel';
@@ -30,6 +31,7 @@ export function mountPopupPanel(options = {}) {
     let activeButtonId = "";
     let panelConfig = null;
     let renderToken = 0;
+    let api = null;
 
     const FADE_MS = 600;
 
@@ -43,13 +45,21 @@ export function mountPopupPanel(options = {}) {
         innerEl.innerHTML = "";
 
         if (typeof panelConfig?.render === "function") {
-            await panelConfig.render({ panelEl: innerEl, buttonId: activeButtonId });
-            return;
+          await panelConfig.render({
+            panelEl: innerEl,
+            buttonId: activeButtonId,
+            panel: api,
+          });
+          return;
         }
 
         if (panelConfig?.type) {
-            await renderPanelByType(panelConfig, { panelEl: innerEl, buttonId: activeButtonId, });
-            return;
+          await renderPanelByType(panelConfig, {
+            panelEl: innerEl,
+            buttonId: activeButtonId,
+            panel: api,
+          });
+          return;
         }
 
         const p = document.createElement("div");
@@ -109,9 +119,14 @@ export function mountPopupPanel(options = {}) {
         innerEl.classList.remove("is-fading-out");
     }
 
+    function routeTo(panelId, buttonId = activeButtonId || panelId) {
+      onRoute?.({ panelId, buttonId });
+    }
+
     function destroy() {
         panelEl.remove();
     }
 
-    return { open, close, destroy, isOpen };
+    api = { open, close, destroy, isOpen, routeTo };
+    return api;
 }
