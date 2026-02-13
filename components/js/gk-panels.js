@@ -83,7 +83,7 @@ export const PANELS = {
             },
             {
               title: "Small Shell",
-              desc:  "Small shell with 3 built in functions and excecvp handeling for more. This was an assignment in college.",
+              desc:  "Small shell with 3 built in functions and calls execvp for handling more. This was an assignment in college.",
               img:   "/images/small-projects/random_commands.png",
               panelId:  "smallsh_about"
             },
@@ -215,7 +215,7 @@ export const PANELS = {
                   { type: "ul", items: ["Safe multi-threaded programming", "How to design and build a system from scratch", "C++", "OpenGL", "OpenAL", "UDP / TCP networking"] },
 
                   { type: "h2", text: "Core Systems" },
-                  { type: "ul", items: ["Multithreaded chunk generation, packet handeling, and audio streaming", "Networking and chunk streaming", "Block and biome registration"] },
+                  { type: "ul", items: ["Multithreaded chunk generation, packet handling, and audio streaming", "Networking and chunk streaming", "Block and biome registration"] },
                 ],
               },
               credits: {
@@ -539,7 +539,7 @@ install: installer
     smallsh_about: {
         type: "project_about",
         menuTitle: "Small Shell",
-        menuSubtitle: "C | Signal Handeling | Process Forking",
+        menuSubtitle: "C | Signal Handling | Process Forking",
         swapMenuHeader: true,
         toc: [
           {
