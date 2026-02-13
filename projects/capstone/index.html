@@ -36,20 +36,40 @@
   </script>
 
   <script type="module">
-  import { mountPopupMenu } from "/components/js/gk-snackbar.js";
+    import { mountPopupMenu } from "/components/js/gk-snackbar.js";
 
-  mountPopupMenu({
-    delayMs: 850,
-    title: "Senior Capstone",
-    subtitle: "Immersive Physics | Collision Avoidance | Beautiful Environment",
-    subtitleSecondary: "C++ | Unreal Engine 5 | Visual Scripting",
-    subtitleCycleMs: 8000,
-    subtitleFirstCycleMs: 5500,
-    buttons: [
-      { id: "About", label: "About", title: "About the Project", panelId: "capstone_about" },
-      { id: "Images", label: "Images", title: "Project Images", panelId: "capstone_images" },
-      { id: "Return", label: "All Projects", title: "Return to Projects Page", href: "/#projects" },
-    ],
+    const menu = mountPopupMenu({
+      delayMs: 850,
+      title: "Senior Capstone",
+      subtitle: "Immersive Physics | Collision Avoidance | Beautiful Environment",
+      subtitleSecondary: "C++ | Unreal Engine 5 | Visual Scripting",
+      subtitleCycleMs: 8000,
+      subtitleFirstCycleMs: 5500,
+      buttons: [
+        { id: "About", label: "About", title: "About the Project", panelId: "capstone_about" },
+        { id: "Images", label: "Images", title: "Project Images", panelId: "capstone_images" },
+        { id: "Return", label: "All Projects", title: "Return to Projects Page", href: "/#projects" },
+      ],
+      });
+
+      const openFromHash = () => {
+        const h = (location.hash || "").toLowerCase();
+
+        const tryOpen = (id) => {
+          const isOpen = menu.el.getAttribute("data-active-btn") === id
+                      && menu.el.getAttribute("data-docked") === "1";
+          if (isOpen) return;
+
+          menu.el.querySelector(`[data-btn-id="${id}"]`)?.click();
+        };
+
+        if (h === "#about" || h === "#capstone-about") tryOpen("About");
+        else if (h === "#images") tryOpen("Images");
+      };
+
+    setTimeout(openFromHash, 850);
+    window.addEventListener("pageshow", (e) => {
+      if (e.persisted) setTimeout(openFromHash, 850);
     });
   </script>
 </body>
