@@ -583,7 +583,7 @@ install: installer
             items: [
               { id: "general", label: "General" },
               { id: "refresh_status", label: "Refresh & Status" },
-              { id: "config", label: "Custom Config" },
+              { id: "settings", label: "Settings" },
             ],
           },
         ],
@@ -647,7 +647,7 @@ install: installer
                   "**ERROR**: some other error occurred. Color is gray"] },
               ],
             },
-            config: {
+            settings: {
               blocks: [
                 { type: "h2", text: "Save file layout" },
                 { type: "code", 
@@ -667,7 +667,7 @@ GrantKopczenski.com = grantkopczenski.com:443
     {
       type: "p",
       text:
-        "You can edit `itpo.ini` manually, but the intended workflow is managing targets and settings directly inside the app."
+        "You can edit `itpo.ini` manually in `%APPDATA%/Roaming/IsThePortOpen/itpo.ini`, but the intended workflow is managing targets and settings directly inside the app."
     },
               ],
             },
