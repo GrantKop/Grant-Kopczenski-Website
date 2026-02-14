@@ -71,9 +71,15 @@ export const PANELS = {
             },
             {
               title: "Is the Port Open",
-              desc:  "A port checker program I wrote in Python to quickly check if my hosted ports were still up.",
+              desc:  "A port pinger app I wrote in Python to quickly check if my hosted ports were still up.",
               img:   "/images/small-projects/itpo.png",
               panelId:  "itpo_about"
+            },
+            {
+              title: "Tarpaulin REST API with OAuth 2.0",
+              desc:  "Flask-based REST API that protects its resources using OAuth authentication via JWT access tokens.",
+              img:   "/images/small-projects/postman.png",
+              panelId:  "rest_auth_about"
             },
             {
               title: "Balatro Mod: Buddy Jokers",
@@ -92,12 +98,6 @@ export const PANELS = {
               desc:  "Terminal game I made in less than 2 hours as a challenge.",
               img:   "/images/small-projects/wumpus_gold.png",
               panelId:  "wumpus_about"
-            },
-            {
-              title: "More to be presented :]",
-              desc:  "",
-              img:   "/images/modules/happy.png",
-              href:  "#"
             },
         ],
     },
@@ -454,7 +454,7 @@ install: installer
               },
             },
         links: [
-            { text: "Repository", href: "https://github.com/GrantKop/Capstone-Space-Ship-Simulator-Game" },
+            { text: "Repository", href: "https://github.com/GrantKop/capstone-space-ship-simulator-game" },
         ],
     },
     // images 
@@ -473,6 +473,30 @@ install: installer
         ],
     },
     // Small projects
+    rest_auth_about: {
+        type: "project_about",
+        menuTitle: "Tarpaulin OAuth REST API",
+        menuSubtitle: "Python | REST API | Auth0 + OAuth 2.0",
+        swapMenuHeader: true,
+        toc: [
+          {
+            title: "Overview",
+            items: [
+              { id: "general", label: "General" },
+            ],
+          },
+        ],
+          pages: {
+            generals: {
+              blocks: [
+
+              ],
+            },
+          },
+        links: [
+            { text: "Repository", href: "https://github.com/GrantKop/tarpaulin-rest-api-oauth" },  
+        ],
+    },
     buddy_jokers_about: {
         type: "project_about",
         menuTitle: "Balatro Mod: Buddy Jokers",
@@ -543,7 +567,7 @@ install: installer
             },
           },
         links: [
-            { text: "Repository", href: "https://github.com/GrantKop/Buddy-Jokers-Balatro-Mod" },
+            { text: "Repository", href: "https://github.com/GrantKop/buddy-jokers-balatro-mod" },
             { text: "Steamodded GitHub", href: "https://github.com/Steamodded" },
             { text: "Aseprite", href: "https://www.aseprite.org/" },   
         ],
@@ -558,6 +582,8 @@ install: installer
             title: "Overview",
             items: [
               { id: "general", label: "General" },
+              { id: "refresh_status", label: "Refresh & Status" },
+              { id: "config", label: "Custom Config" },
             ],
           },
         ],
@@ -565,17 +591,90 @@ install: installer
             general: {
               blocks: [
                 { type: "h2", text: "General" },
-                { type: "p", text: "WIP page" },
+                { type: "p", text: "This is a simple desktop app to quickly check whether a TCP port is reachable (OPEN/CLOSED/TIMEOUT/DNS_FAIL) across multiple targets with a clean UI, fast concurrent checks, and persistent saved targets." },
+                { type: "p", text: "I made this program when a friend and I were working on a Minecraft plug-in together. The plug-in, *Fabrivis*, took advantage of a database to save and load player data. " +
+                  "It was originally just so I could quickly check if the data base and Minecraft server were still up, but I now use it for my Ubuntu system, to quickly check if any of my hosted applications are down." },
+
+                { type: "h2", text: "What it does" },
+                { type: "h4", text: "- Lets you manage targets in-app: " },
+                { type: "ul", items: [
+                  "Add targets with the **+** button (Name, Host, Port)",
+                  "Delete targets with the **✕** button on each row",
+                  "Displays targets in a scrollable list showing **Name**, **Host**, **Port**, and **Status**"] },
+                { type: "h4", text: "- Lets you edit scan settings in-app:" },
+                { type: "ul", items: [
+                  "**Timeout seconds** (per connection attempt)",
+                  "**Max workers** (thread pool size / concurrency)",
+                  "**Auto refresh seconds** (set to `0` to disable)"] },
+                { type: "h4", text: "- Runs port checks concurrently using a `ThreadPoolExecutor` so multiple targets can be tested quickly." },
+                { type: "h4", text: "- Updates the UI with a status chip and latency (ms) when the port is open." },
+
+                { type: "h2", text: "Screenshots" },
                 { type: "img", 
                   src: "/images/small-projects/itpo.png", 
                   alt: "ITPO showing results for 5 different ports",
-                  caption: "All ports I host on my Ubuntu Machine being checked by ITPO",
+                  caption: "In this screenshot you can see my Minecraft and Terraria servers timed out, my Hytale and database showed closed, and this website responded as Open",
                 },
+                { type: "img", 
+                  src: "/images/small-projects/itpo_target.png", 
+                  alt: "ITPO target add window",
+                  caption: "This is the window to add a target to the ping list",
+                },
+                { type: "img", 
+                  src: "/images/small-projects/itpo_settings.png", 
+                  alt: "ITPO settings window",
+                  caption: "Here is the ITPO settings window",
+                },
+              ],
+            },
+            refresh_status: {
+              blocks: [
+                { type: "h2", text: "How refresh works" },
+                { type: "p", text: "Pressing the refresh button triggers and asynchronous scan: "},
+                { type: "ul", items: [
+                  "The Refresh button disables to prevent spamming",
+                  "All targets update to **Checking...**",
+                  "A background worker thread submits checks to the thread pool",
+                  "Results are applied back on the `Tkinter` main thread via `after(0, ...)`"] },
+                { type: "p", text: "If **Auto refresh seconds** is set above 0 in Settings, the app will automatically refresh on that interval."},
+
+                { type: "h2", text: "Statuses and their meaning" },
+                { type: "ul", items: [
+                  "**OPEN**: connection was successful. Color is green and includes latency: `OPEN (*ms)`",
+                  "**CLOSED**: connection was refused. Color is red",
+                  "**TIMEOUT**: no response within the configured time. Color is yellow",
+                  "**DNS_FAIL**: hostname lookup failed. Color is blue",
+                  "**ERROR**: some other error occurred. Color is gray"] },
+              ],
+            },
+            config: {
+              blocks: [
+                { type: "h2", text: "Save file layout" },
+                { type: "code", 
+                  lang: "key-value config", 
+                  filename: "itpo.ini",
+                  code: `[SETTINGS]
+TIMEOUT_SECONDS = 5.0
+MAX_WORKERS = 5
+AUTO_REFRESH_SECONDS = 0
+
+[TARGETS]
+; Target Name = Host:Port
+Minecraft = 68.118.58.102:25565
+GrantKopczenski.com = grantkopczenski.com:443
+`
+    },
+    {
+      type: "p",
+      text:
+        "You can edit `itpo.ini` manually, but the intended workflow is managing targets and settings directly inside the app."
+    },
               ],
             },
           },
         links: [
-            { text: "Repository", href: "https://github.com/Fabrivis-Plugin/ITPO" },
+            { text: "Repository", href: "https://github.com/GrantKop/is-the-port-open" },
+            { text: "Latest Release", href: "https://github.com/GrantKop/is-the-port-open/releases" },            
             { text: "TKinter Documentation", href: "https://docs.python.org/3/library/tkinter.html" },
         ],
     },
@@ -636,7 +735,7 @@ install: installer
             }
           },
         links: [
-            { text: "Repository", href: "https://github.com/GrantKop/Small-Shell" },
+            { text: "Repository", href: "https://github.com/GrantKop/small-shell" },
         ],
     },
     wumpus_about: {
@@ -703,7 +802,7 @@ install: installer
             }
           },
         links: [
-            { text: "Repository", href: "https://github.com/GrantKop/Dungeon-Crawler-Game" },
+            { text: "Repository", href: "https://github.com/GrantKop/dungeon-crawler-game" },
             { text: "Wikipedia", href: "https://en.wikipedia.org/wiki/Hunt_the_Wumpus" },
         ],
     },
