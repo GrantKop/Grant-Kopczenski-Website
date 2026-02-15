@@ -1,8 +1,47 @@
 import { loadTemplate } from "/components/js/gk-templates.js";
 
+function appendInline(el, text) {
+  const s = String(text ?? "");
+
+  const re = /(\*\*[^*]+\*\*|\*[^*\n]+\*|_[^_\n]+_|`[^`\n]+`)/g;
+
+  let last = 0;
+  for (const m of s.matchAll(re)) {
+    const i = m.index ?? 0;
+
+    if (i > last) el.appendChild(document.createTextNode(s.slice(last, i)));
+
+    const tok = m[0];
+
+    if (tok.startsWith("**")) {
+      const b = document.createElement("strong");
+      b.textContent = tok.slice(2, -2);
+      el.appendChild(b);
+    } else if (tok.startsWith("*")) {
+      const em = document.createElement("em");
+      em.textContent = tok.slice(1, -1);
+      el.appendChild(em);
+    } else if (tok.startsWith("_")) {
+      const em = document.createElement("em");
+      em.textContent = tok.slice(1, -1);
+      el.appendChild(em);
+    } else if (tok.startsWith("`")) {
+      const code = document.createElement("code");
+      code.textContent = tok.slice(1, -1);
+      el.appendChild(code);
+    } else {
+      el.appendChild(document.createTextNode(tok));
+    }
+
+    last = i + tok.length;
+  }
+
+  if (last < s.length) el.appendChild(document.createTextNode(s.slice(last)));
+}
+
 function makeEl(tag, text) {
   const el = document.createElement(tag);
-  if (text != null) el.textContent = String(text);
+  if (text != null && tag !== "code") appendInline(el, text);
   return el;
 }
 
@@ -16,6 +55,99 @@ function appendBlocks(bodyEl, blocks){
     else if (b.type === "h3") bodyEl.appendChild(makeEl("h3", b.text));
     else if (b.type === "h4") bodyEl.appendChild(makeEl("h4", b.text));
     else if (b.type === "p") bodyEl.appendChild(makeEl("p", b.text));
+    else if (b.type === "img") {
+      const src = b.src ?? b.image;
+      if (!src) continue;
+
+      const figure = document.createElement("figure");
+      figure.className = b.figureClass ?? "gk-project-about__figure";
+
+      const img = document.createElement("img");
+      img.className = b.className ?? "gk-project-about__img";
+      img.src = src;
+
+      img.alt = b.alt ?? "";
+      img.loading = b.loading ?? "lazy";
+      img.decoding = b.decoding ?? "async";
+
+      if (b.width) img.width = b.width;
+      if (b.height) img.height = b.height;
+
+      figure.appendChild(img);
+
+      if (b.caption) {
+        const cap = document.createElement("figcaption");
+        cap.className = "gk-project-about__caption";
+        cap.textContent = b.caption;
+        figure.appendChild(cap);
+      }
+
+      bodyEl.appendChild(figure);
+    }
+    else if (b.type === "code") {
+      const figure = document.createElement("figure");
+      figure.className = b.figureClass ?? "gk-project-about__code";
+
+      const header = document.createElement("div");
+      header.className = "gk-project-about__code-head";
+
+      const meta = document.createElement("div");
+      meta.className = "gk-project-about__code-meta";
+
+      const name = document.createElement("div");
+      name.className = "gk-project-about__code-name";
+      name.textContent = b.filename ?? "";
+
+      const lang = document.createElement("div");
+      lang.className = "gk-project-about__code-lang";
+      lang.textContent = (b.lang ?? "").toLowerCase();
+
+      if (name.textContent) meta.appendChild(name);
+      if (lang.textContent) meta.appendChild(lang);
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "gk-project-about__code-copy";
+      copyBtn.textContent = "Copy";
+
+      let codeText = String(b.code ?? "");
+      codeText = codeText.replace(/\\\$\{/g, "${");
+      copyBtn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(codeText);
+          copyBtn.textContent = "Copied!";
+          setTimeout(() => (copyBtn.textContent = "Copy"), 900);
+        } catch {
+          copyBtn.textContent = "Failed";
+          setTimeout(() => (copyBtn.textContent = "Copy"), 900);
+        }
+      });
+    
+      header.appendChild(meta);
+      header.appendChild(copyBtn);
+    
+      const pre = document.createElement("pre");
+      pre.className = "gk-project-about__pre";
+    
+      const code = document.createElement("code");
+      code.className = "gk-project-about__code-inner";
+      if (b.lang) code.setAttribute("data-lang", String(b.lang).toLowerCase());
+      code.textContent = codeText;
+    
+      pre.appendChild(code);
+    
+      if ((b.filename || b.lang) || b.copy !== false) figure.appendChild(header);
+      figure.appendChild(pre);
+    
+      if (b.caption) {
+        const cap = document.createElement("figcaption");
+        cap.className = "gk-project-about__caption";
+        cap.textContent = b.caption;
+        figure.appendChild(cap);
+      }
+    
+      bodyEl.appendChild(figure);
+    }
     else if (b.type === "ul") {
       const ul = document.createElement("ul");
       for (const it of (b.items || [])) ul.appendChild(makeEl("li", it));
