@@ -1,4 +1,4 @@
-// All panels defined here
+// All panels (and their content) defined here
 
 export const PANELS = {
     // --------------------- Home Panels ----------------------------------------------------------------
