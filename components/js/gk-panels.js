@@ -472,7 +472,7 @@ install: installer
                   { type: "h4", text: "Why in space?" },
                   { type: "p", text: "Why not? There were 2-3 other teams also building driving simulators with the same requirements we had. We wanted ours to feel different and stand out a bit, so we set it in **space**" },
                   
-                  { type: "h2", text: "My Team" },
+                  { type: "h2", text: "Team Apollo" },
                   { type: "p", text: "Occasionally we would work together on some aspects of the project, but for the most part the break down went as follows: " },
                   { type: "ul", items: ["Jacob Irace (Ship Control)", "Zhong Zheng (Level Design)", "Michael Molineaux (ADAS)", "Grant Kopczenski (Assets and UI)"] },
                 ],
