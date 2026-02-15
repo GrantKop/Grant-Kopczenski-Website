@@ -235,6 +235,16 @@
   color: rgba(255,255,255,0.92);
   overflow-wrap: anywhere;
 }
+.gk-project-about__body p strong,
+.gk-project-about__body p b,
+.gk-project-about__body li strong,
+.gk-project-about__body li b {
+  font-weight: 800;
+}
+.gk-project-about__body p strong,
+.gk-project-about__body li strong {
+  color: rgba(255,255,255,0.98);
+}
 
 .gk-project-about__body :not(pre) h1 > code {
   font-size: 53px;
