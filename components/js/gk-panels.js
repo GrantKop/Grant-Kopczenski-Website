@@ -177,7 +177,7 @@ export const PANELS = {
             title: "Extra",
             items: [
               { id: "tools", label: "Other Tools" },
-              { id: "future", label: "Future Plans"},
+              // { id: "future", label: "Future Plans"},
             ],
           },
         ],
@@ -436,21 +436,81 @@ install: installer
             title: "Overview",
             items: [
               { id: "capstone", label: "About my Capstone" },
+              { id: "highlights", label: "Highlights" },
+              { id: "goal", label: "Our Goal" },
             ],
           },
           {
-            title: "Our goal",
-            items: [],
+            title: "The Game",
+            items: [
+              { id: "levels", label: "Levels" },
+              { id: "adas", label: "ADAS" },
+            ],
+          },
+          {
+            title: "My Role",
+            items: [
+              { id: "menus_ui", label: "Menus & UI" },
+              { id: "blueprints", label: "Blueprints" },
+            ],
+          },
+          {
+            title: "Extra",
+            items: [
+              { id: "expo", label: "Our Expo Booth" },
+            ],
           },
         ],
           pages: {
               capstone: {
                 blocks: [
                   { type: "h2", text: "What was my Capstone?" },
-                  { type: "p", text: "" },
+                  { type: "p", text: "For my senior capstone project, my team and I were tasked with building a driving simulator, and we got approved to set it in **space**. " +
+                    "We used **Unreal Engine 5** because it provided the strongest tools for what we wanted to create. " + 
+                    "We had from about week 4 of the fall term through week 5 of the spring term, so roughly **23 academic weeks** total to build and prepare the project for presentation. " +
+                    "We also had to meet with our proposed project partner (ours was just a TA) weekly to give progress updates and discuss our plans." },
+                  { type: "h4", text: "Why in space?" },
+                  { type: "p", text: "Why not? There were 2-3 other teams also building driving simulators with the same requirements we had. We wanted ours to feel different and stand out a bit, so we set it in **space**" },
+                  
                   { type: "h2", text: "My Team" },
-                  { type: "ul", items: ["Jacob Irace", "Zhong Zheng", "Michael Molineaux", "Grant Kopczenski"]},
+                  { type: "p", text: "Occasionally we would work together on some aspects of the project, but for the most part the break down went as follows: " },
+                  { type: "ul", items: ["Jacob Irace (Ship Control)", "Zhong Zheng (Level Design)", "Michael Molineaux (ADAS)", "Grant Kopczenski (Assets and UI)"] },
                 ],
+              },
+              highlights: {
+                blocks: [
+                  { type: "h2", text: "Skills I gained" },
+                  { type: "ul", items: ["**Unreal Engine 5 workflow**: building gameplay systems, iterating quickly, and debugging in UE5 (especially with blueprints)", 
+                    "**UI/UX implementations**: designing menus and HUD flow, assembling UI from assets",
+                    "**Team collaboration**: dividing responsibilities, coordinating merges/hand-offs, getting help/feedback, and communicating progress under a real deadline",
+                    "**Project planning & scope control**: prioritizing requirements, cutting/adjusting features, and shipping a presentable build on schedule."
+                  ] },
+                  { type: "h2", text: "Project Highlights" },
+                  { type: "ul", items: ["**ADAS collision avoidance**: smart co-pilot to help avoid asteroids, debris, and AI-controlled craft", 
+                    "**Spaceflight sim in UE5**: built in **Unreal Engine 5** with rapid iteration (Blueprints)",
+                    "**Multiple game modes**: different ways to play/test the sim",
+                    "**Menus & UI**: complete front end flow + in-game feedback"
+                  ] },           
+                ]
+              },
+              goal: {
+                blocks: [
+                  { type: "h2", text: "Our Goal" },
+                  { type: "p", text: "Our goal was to build an immersive space flight simulator that's fun to explore and satisfying to control. " +
+                    "We also wanted it to feel like a realistic training-style experience, something astronauts could use to practice basic spaceflight concepts without actually having to go to space. " +
+                    "One of our core requirements was implementing **ADAS** (Advanced Driver Assistance Systems), " +
+                    "so we designed it as a “smart co-pilot” that helps pilots avoid hazards like asteroids, debris, and other AI-controlled craft. " +
+                    "The end result is a playable spaceflight experience with several gamemodes that feels approachable, but still has depth." },
+                  
+                  { type: "h2", text: "Requirements" },
+                  { type: "p", text: "These were requirements set by the project partner as well as ourselves: " },
+                  { type: "ul", items: ["**Spaceflight driving simulator** set in a 3D space environment",
+                    "**ADAS (Advanced Driver Assistance Systems)** for collision avoidance with asteroids, debris, and other spacecraft",
+                    "**Realistic-ish physics + intuitive controls** (accessible to learn, with depth to master)",
+                    "**Multiple game modes** to show off different ways to play/train",
+                    "**Menus & UI** to support mode selection, settings, and in-sim feedback",
+                    "**AI-controlled craft / obstacles** to create believable traffic and hazards"] },
+                ]
               },
             },
         links: [
