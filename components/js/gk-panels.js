@@ -487,9 +487,22 @@ install: installer
           },
         ],
           pages: {
-            generals: {
+            general: {
               blocks: [
+                { type: "h2", text: "About" },
+                { type: "p", text: "**Tarpaulin** is a **Flask-based REST API** for a mock course management system (users, courses, and enrollments). " +
+                  "It protects resources using **OAuth authentication via Auth0** and **JWT access tokens**. " +
+                  "Clients authenticate with Auth0 to obtain an access token, then include it in API requests; the server validates the token before allowing access to protected endpoints." },
+                { type: "p", text: "This was an assignment for a class I took in college. The hosted deployment was only live for the duration of the course, so the public endpoint is no longer running." },
 
+                { type: "h2", text: "Authentication & authorization model" },
+                { type: "ul", items: ["Requests are authenticated using a `Bearer <token>` header", "The API fetches Auth0's **JWKS** and verifies JWT signature + claims (issuer, audience, RS256)", "The token's `sub` is used to look up the corresponding user record in Datastore to enforce role-based permissions (admin / instructor / student)"] },
+
+                { type: "h2", text: "Data & Hosting" },
+                { type: "ul", items: ["**Google Cloud Datastore** stores application entities like `users` and `courses`", "**Google Cloud Storage** is used for avatar uploads (only accepts PNG), storing blobs and serving them back through authenticated routes", "Designed to run on **Google App Engine** with **Gunicorn** as the entrypoint and environment variables for Auth0 + GCP config"] },
+
+                { type: "h2", text: "Postman" },
+                { type: "p", text: "I used **Postman** to test authentication flows and validate each endpoint (request/response formats, status codes, and role-based access)." },
               ],
             },
           },
