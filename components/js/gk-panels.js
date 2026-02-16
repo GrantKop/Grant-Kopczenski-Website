@@ -401,6 +401,11 @@ install: installer
                     "With my `run` target, I was able to easily launch and debug my project as I was creating it. " +
                     "It also has an `installer` target that builds a 'Release' version, installs it, and runs `CPack` to generate an `NSIS` installer." },
                 ]
+              },
+              future: {
+                blocks: [
+
+                ]
               }
             },
         links: [
