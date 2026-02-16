@@ -117,6 +117,53 @@ export function mountPopupMenu(options = {}) {
     let headerSwapToken = 0;
     let headerIsSwapped = false;
 
+    let historyArmed = false;
+
+    function onPopState(e) {
+      const h = normalizeHash();
+
+      if (isBaseSectionHash(h)) {
+        if (panel.isOpen()) closePanelSilently();
+        return;
+      }
+
+      const btnIdFromUrl = buttonIdFromHash();
+
+      const targetPanelId = panelFromHash();
+      if (targetPanelId && PANELS[targetPanelId]) {
+        const cfg = PANELS[targetPanelId];
+
+        currentPanelId = targetPanelId;
+        setExpanded(false);
+        setDocked(true);
+
+        const btnId = btnIdFromUrl || activeButtonId || "Projects-All"
+        setActiveButton(btnId);
+        
+        panel.open(btnId, cfg);
+
+        const nextSwaps = panelWantsHeaderSwap(cfg);
+        if (nextSwaps) setHeaderForPanel(cfg);
+        else if (headerIsSwapped) restoreBaseHeader();
+
+        return;
+      }
+      if (btnIdFromUrl) setActiveButton(btnIdFromUrl);
+      if (panel.isOpen()) closePanelSilently();
+    }
+
+    function armHistory() {
+      if (historyArmed) return;
+      window.addEventListener("popstate", onPopState);
+      historyArmed = true;
+    }
+    
+    function disarmHistory() {
+      if (!historyArmed) return;
+      window.removeEventListener("popstate", onPopState);
+      historyArmed = false;
+    }
+
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
     function nextFrame() { return new Promise((r) => requestAnimationFrame(() => r())); }
 
@@ -263,14 +310,20 @@ export function mountPopupMenu(options = {}) {
 
     function panelFromHash() {
       const { base, group } = parseHash();
-      if (base !== "#projects") return null;
 
-      switch (group) {
-        case "large":    return "home_big_projects";
-        case "small":    return "home_small_projects";
-        case "hardware": return "home_hardware_projects";
-        default:         return "home_projects_all";
-      }
+        if (base === "#projects") {
+          switch (group) {
+            case "large":    return "home_big_projects";
+            case "small":    return "home_small_projects";
+            case "hardware": return "home_hardware_projects";
+            default:         return "home_projects_all";
+          }
+        }
+
+        if (base === "#photos")  return "home_photos";
+        if (base === "#prints")  return "home_prints";
+        // if (base === "#about")   return "home_about";
+        // if (base === "#images")  return "home_images";
     }
 
     function hashForButtonId(id) {
@@ -282,18 +335,43 @@ export function mountPopupMenu(options = {}) {
       }
     }
 
+    function buttonIdFromHash() {
+      const base = (window.location.hash || "").split("?")[0];  
+
+      switch (base) {
+        case "#projects": return "Projects-All";
+        case "#photos":   return "Photos";
+        case "#prints":   return "3D-Prints";
+        case "#about":    return "About";
+        case "#images":   return "Images";
+        default:          return "";
+      }
+    }
+
     function setHash(hash, { push = false } = {}) {
       const url = new URL(window.location.href);
       url.hash = hash || "";
 
-      const state = { hash: url.hash, panelId: currentPanelId, btnId: activeButtonId };
+      const state = { gk: 1, hash: url.hash };
 
       if (push) history.pushState(state, "", url);
       else history.replaceState(state, "", url);
     }
 
-    function clearHash({ push = false } = {}) {
-      setHash("", { push });
+    function clearHash() {
+      const url = new URL(window.location.href);
+      url.hash = "";
+      history.replaceState(history.state, "", url);
+    }
+
+    function isBaseSectionHash(hash) {
+      const [base] = (hash || "").split("?");
+      return base === "" ||
+             base === "#";
+    }
+
+    function normalizeHash() {
+      return (window.location.hash || "").trim();
     }
 
     function openPanel(buttonId, panelId) {
@@ -303,6 +381,8 @@ export function mountPopupMenu(options = {}) {
             return;
         }
 
+        const wasClosed = !panel.isOpen();
+
         currentPanelId = panelId;
 
         setExpanded(false); 
@@ -310,15 +390,22 @@ export function mountPopupMenu(options = {}) {
         setActiveButton(buttonId);
         panel.open(buttonId, nextCfg);
 
+        armHistory();
+
+        const baseHash = hashForButtonId(buttonId);
+
         const group = groupFromPanelId(panelId);
-        const hash = (panelId === "home_projects_all" ||
-                      panelId === "home_big_projects" ||
-                      panelId === "home_small_projects" ||
-                      panelId === "home_hardware_projects")
-          ? makeProjectsHash(group)
-          : hashForButtonId(buttonId);
+        const detailHash =
+          (baseHash === "#projects")
+            ? makeProjectsHash(group)
+            : baseHash;
         
-        setHash(hash, { push: true });
+        if (wasClosed) {
+          setHash(baseHash, { push: true });
+          if (detailHash !== baseHash) setHash(detailHash, { push: true });
+        } else {
+          setHash(detailHash, { push: true });
+        }
 
         const nextSwaps  = panelWantsHeaderSwap(nextCfg);
 
@@ -334,24 +421,34 @@ export function mountPopupMenu(options = {}) {
     }
 
     function closePanel() {
-        const panelId = buttonToPanelId.get(activeButtonId);
-        const cfg = panelId ? PANELS[panelId] : null;
+      if (!panel.isOpen()) return;
+    
+      if (history.state && history.state.gk === 1) {
+        suppressNextPop = false;
+        history.back();
+        return;
+      }
+  
+      closePanelSilently();
+      clearHash();
+    }
 
-        panel.close();
-        currentPanelId = '';
+    function closePanelSilently() {
+      const panelId = buttonToPanelId.get(activeButtonId);
+      const cfg = panelId ? PANELS[panelId] : null;
 
-        setDocked(false);
-        setExpanded(false);
-        setActiveButton('');
-        clearHash({ push: false });
+      panel.close();
+      currentPanelId = '';
 
-        if (panelWantsHeaderSwap(cfg)) {
-            restoreBaseHeader();
-        }
+      setDocked(false);
+      setExpanded(false);
+      setActiveButton('');
 
-        [...nav.querySelectorAll('.gk-snackbar__btn')].forEach(btn => {
-            btn.classList.remove('is-active');
-        });
+      if (panelWantsHeaderSwap(cfg)) restoreBaseHeader();
+
+      [...nav.querySelectorAll('.gk-snackbar__btn')].forEach(btn => btn.classList.remove('is-active'));
+
+      disarmHistory();
     }
 
     function togglePanel(buttonId, panelId) {
@@ -462,31 +559,6 @@ export function mountPopupMenu(options = {}) {
 
         const within = shell.contains(e.target);
         if (!within) setExpanded(false);
-    });
-
-    window.addEventListener("popstate", () => {
-      const targetPanelId = panelFromHash();
-      if (!targetPanelId) return;
-
-      const cfg = PANELS[targetPanelId];
-      if (!cfg) return;
-
-      const btnId =
-        targetPanelId === "home_projects_all"      ? "Projects-All" :
-        targetPanelId === "home_big_projects"      ? "Projects-All" :
-        targetPanelId === "home_small_projects"    ? "Projects-All" :
-        targetPanelId === "home_hardware_projects" ? "Projects-All" :
-        activeButtonId;
-
-      currentPanelId = targetPanelId;
-      setExpanded(false);
-      setDocked(true);
-      setActiveButton(btnId);
-      panel.open(btnId, cfg);
-
-      const nextSwaps = panelWantsHeaderSwap(cfg);
-      if (nextSwaps) setHeaderForPanel(cfg);
-      else if (headerIsSwapped) restoreBaseHeader();
     });
 
     function setExpanded(expanded) {
