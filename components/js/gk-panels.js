@@ -35,9 +35,14 @@ export const PANELS = {
         menuTitle: "Large Software Projects",
         menuSubtitle: "Click on a card to learn more",
         swapMenuHeader: true,
+        showcase: false,
+        showcaseTitle: "Showcase",
+        sectionTitle: "All Large Projects",
+        showcaseCount: 4,
         cards: [
             {
               title: "TerraLink",
+              showcase: true,
               desc:  "Procedural voxel terrain engine built in C++ with OpenGL and OpenAL. Supports terrain streaming.",
               img:   "/projects/terralink/images/thumbs/terralink_house.png",
               href:  "/projects/terralink"
@@ -48,12 +53,6 @@ export const PANELS = {
               img:   "/images/modules/capstone_project.png",
               href:  "/projects/capstone"
             },
-            {
-              title: "More to be come :]",
-              desc:  "",
-              img:   "/images/modules/happy.png",
-              href:  "#"
-            },
         ],
     },
     // small
@@ -62,6 +61,10 @@ export const PANELS = {
         menuTitle: "Small Software Projects",
         menuSubtitle: "Click on a card to learn more",
         swapMenuHeader: true,
+        showcase: true,
+        showcaseTitle: "Showcase",
+        sectionTitle: "All Small Projects",
+        showcaseCount: 4,
         cards: [
             {
               title: "All my Scripts",
@@ -71,18 +74,21 @@ export const PANELS = {
             },
             {
               title: "Is the Port Open",
+              showcase: true,
               desc:  "A port pinger app I wrote in Python to quickly check if my hosted ports were still up.",
               img:   "/images/small-projects/itpo.png",
               panelId:  "itpo_about"
             },
             {
               title: "Tarpaulin REST API with OAuth 2.0",
+              showcase: true,
               desc:  "Flask-based REST API that protects its resources using OAuth authentication via JWT access tokens.",
               img:   "/images/small-projects/postman.png",
               panelId:  "rest_auth_about"
             },
             {
               title: "Balatro Mod: Buddy Jokers",
+              showcase: true,
               desc:  "Mod for the indie game 'Balatro' that adds some of my friends in as Jokers.",
               img:   "/images/small-projects/jokers_in_game.png",
               panelId:  "buddy_jokers_about"

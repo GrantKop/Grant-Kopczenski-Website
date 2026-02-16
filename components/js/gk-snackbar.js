@@ -117,6 +117,59 @@ export function mountPopupMenu(options = {}) {
     let headerSwapToken = 0;
     let headerIsSwapped = false;
 
+    let gkStack = [];
+    let jumpingHome = false;
+    let historyArmed = false;
+
+    function onPopState(e) {
+      const h = normalizeHash();
+
+      if (isBaseSectionHash(h)) {
+        gkStack = [];
+        jumpingHome = false;
+        if (panel.isOpen()) closePanelSilently();
+        return;
+      }
+
+      const idx = gkStack.lastIndexOf(h);
+      if (idx !== -1) gkStack = gkStack.slice(0, idx + 1);
+
+      const btnIdFromUrl = buttonIdFromHash();
+      const targetPanelId = panelFromHash();
+      if (targetPanelId && PANELS[targetPanelId]) {
+        const cfg = PANELS[targetPanelId];
+
+        currentPanelId = targetPanelId;
+        setExpanded(false);
+        setDocked(true);
+
+        const btnId = btnIdFromUrl || activeButtonId || "Projects-All"
+        setActiveButton(btnId);
+        
+        panel.open(btnId, cfg);
+
+        const nextSwaps = panelWantsHeaderSwap(cfg);
+        if (nextSwaps) setHeaderForPanel(cfg);
+        else if (headerIsSwapped) restoreBaseHeader();
+
+        return;
+      }
+      if (btnIdFromUrl) setActiveButton(btnIdFromUrl);
+      if (panel.isOpen()) closePanelSilently();
+    }
+
+    function armHistory() {
+      if (historyArmed) return;
+      window.addEventListener("popstate", onPopState);
+      historyArmed = true;
+    }
+    
+    function disarmHistory() {
+      if (!historyArmed) return;
+      window.removeEventListener("popstate", onPopState);
+      historyArmed = false;
+    }
+
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
     function nextFrame() { return new Promise((r) => requestAnimationFrame(() => r())); }
 
@@ -225,9 +278,14 @@ export function mountPopupMenu(options = {}) {
         activeButtonId = id || '';
         el.setAttribute('data-active-btn', activeButtonId);
 
+        const open = panel.isOpen();
         [...nav.querySelectorAll('.gk-snackbar__btn')].forEach(btn => {
             btn.classList.toggle('is-active', btn.dataset.btnId === activeButtonId && panel.isOpen());
         });
+
+        if (!open) {
+          [...nav.querySelectorAll('.gk-snackbar__btn')].forEach(btn => btn.classList.remove('is-active'));
+        }
     }
 
     function slugify(id) {
@@ -235,6 +293,48 @@ export function mountPopupMenu(options = {}) {
         .trim()
         .toLowerCase()
         .replace(/\s+/g, "-");
+    }
+
+    function makeProjectsHash(group) {
+      return group ? `#projects?group=${encodeURIComponent(group)}` : "#projects";
+    }
+
+    function groupFromPanelId(panelId) {
+      switch (panelId) {
+        case "home_projects_all":      return null;
+        case "home_big_projects":      return "large";
+        case "home_small_projects":    return "small";
+        case "home_hardware_projects": return "hardware";
+        default: return null;
+      }
+    }
+
+    function parseHash() {
+      const raw = window.location.hash || "";
+      const [base, query = ""] = raw.split("?");
+      const params = new URLSearchParams(query);
+      return {
+        base,
+        group: params.get("group"),
+      };
+    }
+
+    function panelFromHash() {
+      const { base, group } = parseHash();
+
+        if (base === "#projects") {
+          switch (group) {
+            case "large":    return "home_big_projects";
+            case "small":    return "home_small_projects";
+            case "hardware": return "home_hardware_projects";
+            default:         return "home_projects_all";
+          }
+        }
+
+        if (base === "#photos")  return "home_photos";
+        if (base === "#prints")  return "home_prints";
+        // if (base === "#about")   return "home_about";
+        // if (base === "#images")  return "home_images";
     }
 
     function hashForButtonId(id) {
@@ -246,14 +346,46 @@ export function mountPopupMenu(options = {}) {
       }
     }
 
-    function setHash(hash) {
+    function buttonIdFromHash() {
+      const base = (window.location.hash || "").split("?")[0];  
+
+      switch (base) {
+        case "#projects": return "Projects-All";
+        case "#photos":   return "Photos";
+        case "#prints":   return "3D-Prints";
+        case "#about":    return "About";
+        case "#images":   return "Images";
+        default:          return "";
+      }
+    }
+
+    function setHash(hash, { push = false } = {}) {
       const url = new URL(window.location.href);
       url.hash = hash || "";
-      history.replaceState(null, "", url);
+
+      const state = { gk: 1, hash: url.hash };
+
+      if (push) {
+        gkStack.push(url.hash);
+        history.pushState(state, "", url);
+      }
+      else history.replaceState(state, "", url);
     }
 
     function clearHash() {
-      setHash("");
+      const url = new URL(window.location.href);
+      url.hash = "";
+      history.replaceState(history.state, "", url);
+    }
+
+    function isBaseSectionHash(hash) {
+      const [base] = (hash || "").split("?");
+      return base === "" ||
+             base === "#";
+    }
+
+    function normalizeHash() {
+      return (window.location.hash || "").trim();
     }
 
     function openPanel(buttonId, panelId) {
@@ -263,6 +395,8 @@ export function mountPopupMenu(options = {}) {
             return;
         }
 
+        const wasClosed = !panel.isOpen();
+
         currentPanelId = panelId;
 
         setExpanded(false); 
@@ -270,7 +404,22 @@ export function mountPopupMenu(options = {}) {
         setActiveButton(buttonId);
         panel.open(buttonId, nextCfg);
 
-        setHash(hashForButtonId(buttonId));
+        armHistory();
+
+        const baseHash = hashForButtonId(buttonId);
+
+        const group = groupFromPanelId(panelId);
+        const detailHash =
+          (baseHash === "#projects")
+            ? makeProjectsHash(group)
+            : baseHash;
+        
+        if (wasClosed) {
+          setHash(baseHash, { push: true });
+          if (detailHash !== baseHash) setHash(detailHash, { push: true });
+        } else {
+          setHash(detailHash, { push: true });
+        }
 
         const nextSwaps  = panelWantsHeaderSwap(nextCfg);
 
@@ -286,25 +435,65 @@ export function mountPopupMenu(options = {}) {
     }
 
     function closePanel() {
-        const panelId = buttonToPanelId.get(activeButtonId);
-        const cfg = panelId ? PANELS[panelId] : null;
-
-        panel.close();
-        currentPanelId = '';
-
-        setDocked(false);
-        setExpanded(false);
-        setActiveButton('');
-        clearHash();
-
-        if (panelWantsHeaderSwap(cfg)) {
-            restoreBaseHeader();
-        }
-
-        [...nav.querySelectorAll('.gk-snackbar__btn')].forEach(btn => {
-            btn.classList.remove('is-active');
-        });
+      if (!panel.isOpen()) return;
+    
+      if (history.state && history.state.gk === 1) {
+        suppressNextPop = false;
+        history.back();
+        return;
+      }
+  
+      closePanelSilently();
+      clearHash();
     }
+
+    function closePanelSilently() {
+      const panelId = buttonToPanelId.get(activeButtonId);
+      const cfg = panelId ? PANELS[panelId] : null;
+
+      panel.close();
+      currentPanelId = '';
+
+      setDocked(false);
+      setExpanded(false);
+      setActiveButton('');
+
+      if (panelWantsHeaderSwap(cfg)) restoreBaseHeader();
+
+      [...nav.querySelectorAll('.gk-snackbar__btn')].forEach(btn => btn.classList.remove('is-active'));
+
+      disarmHistory();
+    }
+
+    function closeToHome() {
+      if (!panel.isOpen()) return;
+
+      const steps = gkStack.length;
+      if (steps > 0) {
+        jumpingHome = true;
+        history.go(-steps);
+        return;
+      }
+
+      closePanelSilently();
+      const url = new URL(window.location.href);
+      url.hash = "";
+      history.replaceState(history.state, "", url);
+    }
+
+    el.addEventListener("click", (e) => {
+      if (!panel.isOpen()) return;
+
+      const ignore = e.target.closest(
+        ".gk-snackbar__nav, .gk-snackbar__btn, .gk-snackbar__more, .gk-snackbar__icons a, a, button"
+      );
+      if (ignore) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      closeToHome();
+    });
 
     function togglePanel(buttonId, panelId) {
       const targetPanelId = panelId;
