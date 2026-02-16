@@ -450,7 +450,7 @@ install: installer
           {
             title: "My Role",
             items: [
-              { id: "menus_ui", label: "Menus & UI" },
+              { id: "menus_ui", label: "Menus, UI, and Saving" },
               { id: "blueprints", label: "Blueprints" },
             ],
           },
@@ -510,6 +510,89 @@ install: installer
                     "**Multiple game modes** to show off different ways to play/train",
                     "**Menus & UI** to support mode selection, settings, and in-sim feedback",
                     "**AI-controlled craft / obstacles** to create believable traffic and hazards"] },
+                ]
+              },
+              levels: {
+                blocks: [
+                  { type: "h2", text: "Free Roam" },
+                  { type: "p", text: "**Free Roam** is a mode where the player can fly their ship anywhere they want in a huge (almost to-scale!) solar system. " +
+                    "It sounded great on paper, but in practice (even with unlimited fuel and constant acceleration) it wasn't practical to fly between planets in a reasonable amount of time. " + 
+                    "Due to that reason, this level was just a free roam around the Earth and Moon." },
+                  { type: "img", 
+                    src: "/projects/capstone/images/thumbs/free_flight.png", 
+                    alt: "Free roam level with Saturn on screen",
+                    caption: "Ship in free roam, passing Saturn",
+                  },
+
+                  { type: "h2", text: "Sample Collection" },
+                  { type: "p", text: "**Sample Collection** is a mode set in an enclosed space where the player navigates an asteroid field, following an arrow that points to the next sample location. " +
+                    "The goal is to collect as many samples as possible in **60 seconds**. " +
+                    "This mode is a control challenge, where small adjustments matter, and managing momentum in a zero-gravity vacuum can get tricky." },
+                  { type: "img", 
+                    src: "/projects/capstone/images/thumbs/sample_collection_mode.png", 
+                    alt: "Sample collection gameplay",
+                    caption: "Sample collection mode, 1 sample collected with less than 6 seconds left",
+                  },
+
+                  { type: "h2", text: "Delivery" },
+                  { type: "p", text: "**Delivery** is a very straightforward gamemode, quite literally. " +
+                    "The objective is to fly the ship through a tunnel of checkpoints (with the occasional asteroid or debris) as fast as possible. " +
+                    "We originally planned to turn it into more of an obstacle-race mode, but we didn't have enough time, so we focused our effort on other parts of the project instead." },
+
+                ]
+              },
+              adas: {
+                blocks: [
+                  { type: "h2", text: "ADAS" },
+                  { type: "p", text: "ADAS stands for **Advanced Driver Assistance Systems**. It's a set of features designed to **help an operator drive more safely** by sensing hazards and either **warning** the user or **assisting** with avoidance. " +
+                    "In our project, ADAS was a core requirement we had to meet, so we treated it like a **smart co-pilot** for spaceflight. It was tasked with: " },
+                  { type: "ul", items: ["Monitoring nearby obstacles (like asteroids, debris, and other AI-controlled crafts", "Estimating collision risks", "Providing guidance/avoidance behavior to reduce crashes"] },
+                  { type: "p", text: "It was basically like a pipeline of **detection -> risk evaluation -> intervention**, and was tuned to make the assistance feel helpful instead of annoying." },
+                  
+                ]
+              },
+              menus_ui: {
+                blocks: [
+                  { type: "h2", text: "Menus & UI" },
+                  { type: "p", text: "I built all of the project's menus and UI, focusing on making everything fast to understand and easy to navigate during gameplay. " +
+                    "This included the main menu flow (mode selection, settings, and navigation) as well as in-game HUD elements like prompts, indicators, and feedback that supported the different game modes. " +
+                    "To keep the UI looking polished on a student timeline, I assembled the interface largely from free assets and customized them into a consistent style, then hooked everything up in Unreal so it actually behaved like a real game UI." },
+                  { type: "p", text: "The menus were not just cosmetic either; they acted as the hub for loading each game mode. Choosing a mode triggered the correct level load and initialized the rules and UI so every mode started clean and ready to play." },
+                  { type: "p", text: "I was especially proud of the audio and video settings. I used UE5 Blueprint functions to scan for and list available audio/video devices and display options, so the settings would work properly across different systems. That little detail made the project feel much more like a real, shippable game."  },
+                  { type: "img", 
+                    src: "/projects/capstone/images/thumbs/main_menu.png", 
+                    alt: "Main menu",
+                    caption: "Main menu, the first screen that fades in on launch, background panorama spins slowly",
+                  },
+
+                  { type: "h2", text: "Saving & Loading" },
+                  { type: "p", text: "I implemented saving and loading using Unreal Engine 5's built-in Save system to make the simulator feel more like a complete game. " +
+                    "I saved key data like game state, high scores, and record times so players could return later and keep their progress. " +
+                    "For **Free Roam**, I also saved the player's position (and related state) so someone could continue a long trip between planets across multiple sessions instead of starting over each time." },
+                  { type: "img", 
+                    src: "/projects/capstone/images/thumbs/load_game.png", 
+                    alt: "List of saves to load",
+                    caption: "Load game screen with several saves",
+                  },
+                ]
+              },
+              blueprints: {
+                blocks: [
+                  { type: "h2", text: "Unreal Engine Blueprints" },
+                  { type: "p", text: "A huge part of this project was built with Unreal's **Blueprints**, UE5's visual scripting system. Blueprints let you build gameplay logic by connecting nodes instead of writing everything in traditional code, which makes it easy to prototype, test ideas, and iterate quickly. For a team project with a tight academic timeline, that speed mattered a lot. We could get something playable early, then keep improving it through tuning and polish instead of getting stuck on boilerplate." },
+                  { type: "p", text: "Blueprints also made collaboration smoother. Systems were easier to understand at a glance, and it was simpler to hand off features between teammates or jump into someone else's work without needing a full deep-dive into a codebase. We used them for everything from game mode logic and UI behavior to interactions, triggers, and quick gameplay experiments. Even when something started as a rough prototype, it was usually fast to refine it into a more complete system once we knew it worked." },
+                  { type: "p", text: "The biggest thing I learned is that Blueprints are not just a “beginner” tool. They are great for building real features, especially when paired with good organization and clean structure. Naming things clearly, keeping graphs readable, and breaking logic into reusable functions made a big difference as the project grew. Overall, Blueprints let us move fast, stay flexible, and focus on making the simulator feel fun and polished." },
+                ]
+              },
+              expo : {
+                blocks: [
+                  { type: "h2", text: "My Expo Experience" },
+                  { type: "p", text: "At our capstone expo, I got to demo the project to a wide mix of people, including other students, parents, and faculty. " +
+                    "It was really fun watching first-time players figure things out in real time. " +
+                    "I got a lot of useful feedback just from seeing where people got confused, what they gravitated toward, and what they asked about. " +
+                    "The best part was seeing a few players discover little exploits live that let them accelerate even faster than we intended. " +
+                    "It turned into an unexpected highlight and made the whole demo feel like a real game playtest. " +
+                    "We also earned full points for both our booth setup and the project itself, which felt like a great payoff for all the polish and effort we put in." },
                 ]
               },
             },
