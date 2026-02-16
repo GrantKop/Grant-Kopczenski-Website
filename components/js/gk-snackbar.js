@@ -117,18 +117,24 @@ export function mountPopupMenu(options = {}) {
     let headerSwapToken = 0;
     let headerIsSwapped = false;
 
+    let gkStack = [];
+    let jumpingHome = false;
     let historyArmed = false;
 
     function onPopState(e) {
       const h = normalizeHash();
 
       if (isBaseSectionHash(h)) {
+        gkStack = [];
+        jumpingHome = false;
         if (panel.isOpen()) closePanelSilently();
         return;
       }
 
-      const btnIdFromUrl = buttonIdFromHash();
+      const idx = gkStack.lastIndexOf(h);
+      if (idx !== -1) gkStack = gkStack.slice(0, idx + 1);
 
+      const btnIdFromUrl = buttonIdFromHash();
       const targetPanelId = panelFromHash();
       if (targetPanelId && PANELS[targetPanelId]) {
         const cfg = PANELS[targetPanelId];
@@ -272,9 +278,14 @@ export function mountPopupMenu(options = {}) {
         activeButtonId = id || '';
         el.setAttribute('data-active-btn', activeButtonId);
 
+        const open = panel.isOpen();
         [...nav.querySelectorAll('.gk-snackbar__btn')].forEach(btn => {
             btn.classList.toggle('is-active', btn.dataset.btnId === activeButtonId && panel.isOpen());
         });
+
+        if (!open) {
+          [...nav.querySelectorAll('.gk-snackbar__btn')].forEach(btn => btn.classList.remove('is-active'));
+        }
     }
 
     function slugify(id) {
@@ -354,7 +365,10 @@ export function mountPopupMenu(options = {}) {
 
       const state = { gk: 1, hash: url.hash };
 
-      if (push) history.pushState(state, "", url);
+      if (push) {
+        gkStack.push(url.hash);
+        history.pushState(state, "", url);
+      }
       else history.replaceState(state, "", url);
     }
 
@@ -450,6 +464,36 @@ export function mountPopupMenu(options = {}) {
 
       disarmHistory();
     }
+
+    function closeToHome() {
+      if (!panel.isOpen()) return;
+
+      const steps = gkStack.length;
+      if (steps > 0) {
+        jumpingHome = true;
+        history.go(-steps);
+        return;
+      }
+
+      closePanelSilently();
+      const url = new URL(window.location.href);
+      url.hash = "";
+      history.replaceState(history.state, "", url);
+    }
+
+    el.addEventListener("click", (e) => {
+      if (!panel.isOpen()) return;
+
+      const ignore = e.target.closest(
+        ".gk-snackbar__nav, .gk-snackbar__btn, .gk-snackbar__more, .gk-snackbar__icons a, a, button"
+      );
+      if (ignore) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      closeToHome();
+    });
 
     function togglePanel(buttonId, panelId) {
       const targetPanelId = panelId;
