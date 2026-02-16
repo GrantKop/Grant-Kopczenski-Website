@@ -6,7 +6,7 @@
     --gk-card-bg-hover: rgba(10, 12, 18, 0.78);
 
     --gk-card-border: rgba(255,255,255,0.14);
-    --gk-card-border-hover: rgba(255,255,255,0.22);
+    --gk-card-border-hover: rgba(255,255,255,0.28);
 
     --gk-card-text: rgba(255,255,255,0.92);
     --gk-card-muted: rgba(255,255,255,0.72);
@@ -26,6 +26,38 @@
     align-content: start;
 }
 
+.gk-cards__section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 16px 0 20px;
+
+  padding-bottom: 3px;
+  border-bottom: 1px solid rgba(255,255,255,0.4);
+}
+.gk-cards__section--showcase {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+.gk-cards--showcase {
+  margin-bottom: 26px;
+}
+.gk-cards__section--main {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.gk-cards__h {
+  margin: 0;
+  font-size: 30px;
+  letter-spacing: 0.6px;
+  color: rgba(255,255,255,0.92);
+  text-transform: uppercase;
+}
+
+.gk-cards__h--underline {
+  display: inline-block;
+}
 
 .gk-card {
     position: relative;

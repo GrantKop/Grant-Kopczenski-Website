@@ -237,6 +237,42 @@ export function mountPopupMenu(options = {}) {
         .replace(/\s+/g, "-");
     }
 
+    function makeProjectsHash(group) {
+      return group ? `#projects?group=${encodeURIComponent(group)}` : "#projects";
+    }
+
+    function groupFromPanelId(panelId) {
+      switch (panelId) {
+        case "home_projects_all":      return null;
+        case "home_big_projects":      return "large";
+        case "home_small_projects":    return "small";
+        case "home_hardware_projects": return "hardware";
+        default: return null;
+      }
+    }
+
+    function parseHash() {
+      const raw = window.location.hash || "";
+      const [base, query = ""] = raw.split("?");
+      const params = new URLSearchParams(query);
+      return {
+        base,
+        group: params.get("group"),
+      };
+    }
+
+    function panelFromHash() {
+      const { base, group } = parseHash();
+      if (base !== "#projects") return null;
+
+      switch (group) {
+        case "large":    return "home_big_projects";
+        case "small":    return "home_small_projects";
+        case "hardware": return "home_hardware_projects";
+        default:         return "home_projects_all";
+      }
+    }
+
     function hashForButtonId(id) {
       switch (id) {
         case "Projects-All": return "#projects";
@@ -246,14 +282,18 @@ export function mountPopupMenu(options = {}) {
       }
     }
 
-    function setHash(hash) {
+    function setHash(hash, { push = false } = {}) {
       const url = new URL(window.location.href);
       url.hash = hash || "";
-      history.replaceState(null, "", url);
+
+      const state = { hash: url.hash, panelId: currentPanelId, btnId: activeButtonId };
+
+      if (push) history.pushState(state, "", url);
+      else history.replaceState(state, "", url);
     }
 
-    function clearHash() {
-      setHash("");
+    function clearHash({ push = false } = {}) {
+      setHash("", { push });
     }
 
     function openPanel(buttonId, panelId) {
@@ -270,7 +310,15 @@ export function mountPopupMenu(options = {}) {
         setActiveButton(buttonId);
         panel.open(buttonId, nextCfg);
 
-        setHash(hashForButtonId(buttonId));
+        const group = groupFromPanelId(panelId);
+        const hash = (panelId === "home_projects_all" ||
+                      panelId === "home_big_projects" ||
+                      panelId === "home_small_projects" ||
+                      panelId === "home_hardware_projects")
+          ? makeProjectsHash(group)
+          : hashForButtonId(buttonId);
+        
+        setHash(hash, { push: true });
 
         const nextSwaps  = panelWantsHeaderSwap(nextCfg);
 
@@ -295,7 +343,7 @@ export function mountPopupMenu(options = {}) {
         setDocked(false);
         setExpanded(false);
         setActiveButton('');
-        clearHash();
+        clearHash({ push: false });
 
         if (panelWantsHeaderSwap(cfg)) {
             restoreBaseHeader();
@@ -414,6 +462,31 @@ export function mountPopupMenu(options = {}) {
 
         const within = shell.contains(e.target);
         if (!within) setExpanded(false);
+    });
+
+    window.addEventListener("popstate", () => {
+      const targetPanelId = panelFromHash();
+      if (!targetPanelId) return;
+
+      const cfg = PANELS[targetPanelId];
+      if (!cfg) return;
+
+      const btnId =
+        targetPanelId === "home_projects_all"      ? "Projects-All" :
+        targetPanelId === "home_big_projects"      ? "Projects-All" :
+        targetPanelId === "home_small_projects"    ? "Projects-All" :
+        targetPanelId === "home_hardware_projects" ? "Projects-All" :
+        activeButtonId;
+
+      currentPanelId = targetPanelId;
+      setExpanded(false);
+      setDocked(true);
+      setActiveButton(btnId);
+      panel.open(btnId, cfg);
+
+      const nextSwaps = panelWantsHeaderSwap(cfg);
+      if (nextSwaps) setHeaderForPanel(cfg);
+      else if (headerIsSwapped) restoreBaseHeader();
     });
 
     function setExpanded(expanded) {
