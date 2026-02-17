@@ -117,22 +117,16 @@ export function mountPopupMenu(options = {}) {
     let headerSwapToken = 0;
     let headerIsSwapped = false;
 
-    let gkStack = [];
-    let jumpingHome = false;
     let historyArmed = false;
 
-    function onPopState(e) {
+    function onPopState() {
       const h = normalizeHash();
 
       if (isBaseSectionHash(h)) {
-        gkStack = [];
-        jumpingHome = false;
         if (panel.isOpen()) closePanelSilently();
         return;
       }
 
-      const idx = gkStack.lastIndexOf(h);
-      if (idx !== -1) gkStack = gkStack.slice(0, idx + 1);
 
       const btnIdFromUrl = buttonIdFromHash();
       const targetPanelId = panelFromHash();
@@ -362,13 +356,10 @@ export function mountPopupMenu(options = {}) {
     function setHash(hash, { push = false } = {}) {
       const url = new URL(window.location.href);
       url.hash = hash || "";
-
+    
       const state = { gk: 1, hash: url.hash };
-
-      if (push) {
-        gkStack.push(url.hash);
-        history.pushState(state, "", url);
-      }
+    
+      if (push) history.pushState(state, "", url);
       else history.replaceState(state, "", url);
     }
 
@@ -438,7 +429,6 @@ export function mountPopupMenu(options = {}) {
       if (!panel.isOpen()) return;
     
       if (history.state && history.state.gk === 1) {
-        suppressNextPop = false;
         history.back();
         return;
       }
@@ -461,24 +451,18 @@ export function mountPopupMenu(options = {}) {
       if (panelWantsHeaderSwap(cfg)) restoreBaseHeader();
 
       [...nav.querySelectorAll('.gk-snackbar__btn')].forEach(btn => btn.classList.remove('is-active'));
-
-      disarmHistory();
     }
 
     function closeToHome() {
       if (!panel.isOpen()) return;
-
-      const steps = gkStack.length;
-      if (steps > 0) {
-        jumpingHome = true;
-        history.go(-steps);
-        return;
-      }
-
+    
       closePanelSilently();
+
       const url = new URL(window.location.href);
       url.hash = "";
-      history.replaceState(history.state, "", url);
+      history.pushState({ gk: 1, hash: "" }, "", url);
+
+      armHistory();
     }
 
     el.addEventListener("click", (e) => {
@@ -503,7 +487,7 @@ export function mountPopupMenu(options = {}) {
         if (currentPanelId && currentPanelId !== targetPanelId) {
           openPanel(buttonId, targetPanelId);
         } else {
-          closePanel();
+          closeToHome();
         }
         return;
       } 
