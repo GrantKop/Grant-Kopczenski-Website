@@ -37,6 +37,7 @@
 
   <script type="module">
     import { mountPopupMenu } from "/components/js/gk-snackbar.js";
+    import { openMenuFromHash } from "/components/js/gk-open-hash.js";
 
     const menu = mountPopupMenu({
       delayMs: 850,
@@ -50,26 +51,15 @@
         { id: "Images", label: "Images", title: "Project Images", panelId: "terralink_images" },
         { id: "Return", label: "All Projects", title: "Return to Projects Page", href: "/#projects" },
       ],
-      });
+    });
 
-      const openFromHash = () => {
-        const h = (location.hash || "").toLowerCase();
-
-        const tryOpen = (id) => {
-          const isOpen = menu.el.getAttribute("data-active-btn") === id
-                      && menu.el.getAttribute("data-docked") === "1";
-          if (isOpen) return;
-
-          menu.el.querySelector(`[data-btn-id="${id}"]`)?.click();
-        };
-
-        if (h === "#about" || h === "#terralink-about") tryOpen("About");
-        else if (h === "#images") tryOpen("Images");
-      };
-
-    setTimeout(openFromHash, 850);
-    window.addEventListener("pageshow", (e) => {
-      if (e.persisted) setTimeout(openFromHash, 850);
+    openMenuFromHash({
+      menuEl: menu.el,
+      map: {
+        "#about": "About",
+        "#terralink-about": "About",
+        "#images": "Images",
+      },
     });
   </script>
 </body>

@@ -38,6 +38,7 @@
 
   <script type="module">
     import { mountPopupMenu } from "/components/js/gk-snackbar.js";
+    import { openMenuFromHash } from "/components/js/gk-open-hash.js";
   
     const menu = mountPopupMenu({
       delayMs: 850,
@@ -52,26 +53,14 @@
         { id: "3D-Prints", label: "3D Prints", title: "3D Designs and Files", panelId: "home_prints" },
       ],
     });
-        
-    const openFromHash = () => {
-      const h = (location.hash || "").toLowerCase();
-        
-      const tryOpen = (id) => {
-        const isOpen = menu.el.getAttribute("data-active-btn") === id
-                    && menu.el.getAttribute("data-docked") === "1";
-        if (isOpen) return;
 
-        menu.el.querySelector(`[data-btn-id="${id}"]`)?.click();
-      };
-
-      if (h === "#projects" || h === "#projects-all") tryOpen("Projects-All");
-      else if (h === "#photos") tryOpen("Photos");
-      else if (h === "#prints" || h === "#3d-prints") tryOpen("3D-Prints");
-    };
-
-    setTimeout(openFromHash, 850);
-    window.addEventListener("pageshow", (e) => {
-      if (e.persisted) setTimeout(openFromHash, 850);
+    openMenuFromHash({
+      menuEl: menu.el,
+      map: {
+        "#projects": "Projects-All",
+        "#photos": "Photos",
+        "#prints": "3D-Prints",
+      },
     });
   </script>
 </body>
