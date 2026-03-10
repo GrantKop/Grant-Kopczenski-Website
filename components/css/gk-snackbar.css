@@ -552,18 +552,48 @@
   }
 
   .gk-snackbar__icons {
-    display: flex !important;
-    opacity: 1 !important;
-    transform: none !important;
-    pointer-events: auto !important;
+    display: flex;
     margin-top: auto;
     margin-bottom: 16px;
     gap: 10px;
+
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+    will-change: opacity, transform;
+  }
+
+  .gk-snackbar[data-state="visible"][data-intro="1"] .gk-snackbar__icons {
+    animation: gkMobileIconsEnter var(--gk-popup-nav-duration) ease both;
+    animation-delay: var(--gk-popup-nav-delay);
+  }
+
+  .gk-snackbar[data-state="visible"]:not([data-intro="1"]) .gk-snackbar__icons {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .gk-popup-shell:not([data-docked="1"]) .gk-snackbar[data-state="visible"] .gk-snackbar__icons {
+    pointer-events: auto;
   }
 
   .gk-popup-shell[data-docked="1"] .gk-snackbar__icons {
     opacity: 0 !important;
+    transform: translateY(6px);
     pointer-events: none !important;
+    animation: none;
+  }
+
+  @keyframes gkMobileIconsEnter {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .gk-snackbar__icons a {
