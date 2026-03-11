@@ -142,7 +142,7 @@
     color: var(--gk-popup-text);
     font-weight: 800;
     letter-spacing: -0.01em;
-    font-size: clamp(22px, 2.8vw, 50px);
+    font-size: clamp(32px, 2.8vw, 50px);
 
     opacity: 0;
     transform: translateY(6px);
@@ -211,7 +211,7 @@
     display: flex;
     align-items: center;
     color: var(--gk-popup-muted);
-    font-size: clamp(12px, 1.2vw, 20px);
+    font-size: clamp(14px, 1.2vw, 20px);
     line-height: 24px;
     white-space: nowrap;
 
@@ -324,7 +324,7 @@
     right: clamp(16px, 4vw, 40px);
     bottom: 10px;
 
-    font-size: clamp(12px, 1.1vw, 16px);
+    font-size: clamp(14px, 2.1vw, 16px);
     line-height: 1.1;
     color: rgba(255,255,255,0.58);
     white-space: nowrap;
@@ -349,7 +349,7 @@
   box-shadow: none;
   border-radius: 0;
 
-  font-size: clamp(22px, 2.12vw, 42px);
+  font-size: clamp(26px, 2.5vw, 42px);
 
   padding: 0;     
   line-height: 1.1;
@@ -448,111 +448,164 @@
 }
 
 @media (max-width: 720px) {
-    :root {
-        --gk-popup-h: 170px;
-        --gk-popup-h-hover: 190px;
-        --gk-popup-btn-scale: 1.0; 
-        --gk-popup-left-nudge: 0px;
-        --gk-popup-nav-raise: 0px;
-    }
+  :root {
+    --gk-popup-h: 112px;
+    --gk-popup-h-hover: 188px;
+    --gk-popup-btn-scale: 1;
+    --gk-popup-left-nudge: 0px;
+    --gk-popup-nav-raise: 0px;
+  }
 
-    .gk-snackbar {
-        height: var(--gk-popup-h);
-        transform: translateY(0);
-    }
 
-    .gk-snackbar__inner {
-        align-items: flex-start;
-        padding: 12px 14px 34px;
-        background: var(--gk-popup-bg-hover);
-    }
+  .gk-popup-shell[data-docked="1"] .gk-snackbar {
+    height: var(--gk-popup-h) !important;
+  }
 
-    .gk-snackbar__left {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-self: stretch;
-        transform: none;
-    }
+  .gk-snackbar__inner {
+    height: 100%;
+    align-items: flex-start;
+    padding: 12px 14px 18px;
+    background: var(--gk-popup-bg-hover);
+  }
 
-    .gk-snackbar__title {
-        font-size: clamp(20px, 6vw, 28px);
-        line-height: 1.05;
-    }
+  .gk-popup-shell[data-docked="1"] .gk-snackbar__inner {
+    background: var(--gk-popup-bg);
+  }
 
-    .gk-snackbar__subtitle-wrap {
-        overflow: visible;
-        height: auto;
-        min-height: 20px;
-        display: grid;
-    }
+  .gk-snackbar__left {
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    transform: none !important;
+  }
 
-    .gk-snackbar__subtitle {
-        position: static;
-        inset: auto;
-        display: block;
-        white-space: normal;
-        line-height: 18px;
-        padding: 0;
-        grid-area: 1 / 1;
-    }
+  .gk-snackbar__title {
+    font-size: clamp(18px, 5.5vw, 28px);
+    line-height: 1.05;
+  }
 
-    .gk-snackbar__right {
-        min-width: 0;
-        padding-bottom: 0;
-        align-self: flex-start;
-    }
+  .gk-snackbar__subtitle-wrap {
+    overflow: visible;
+    height: auto;
+    min-height: 20px;
+    display: grid;
+  }
 
-    .gk-snackbar__nav {
-        justify-content: flex-end;
-        flex-wrap: nowrap;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 10px;
-        row-gap: 10px;
-    }
+  .gk-snackbar__subtitle {
+    position: static;
+    inset: auto;
+    display: block;
+    overflow: visible;
+    white-space: nowrap;
 
-    .gk-snackbar__more { display: none; }
-    .gk-snackbar__navrow { padding-right: 0; }
+    line-height: 18px;
+    padding: 0;
+    grid-area: 1 / 1;
+    font-size: clamp(11px, 2.95vw, 14px);
+    max-width: none;
+  }
 
-    .gk-snackbar__btn {
-        width: max-content;
-        font-size: 14px;
-        padding: 10px 14px;
-        border-radius: 14px;
-    }
+  .gk-snackbar__right {
+    min-width: 0;
+    height: 100%;
+    padding-bottom: 0;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
 
-    .gk-snackbar__footer {
-        left: 12px;
-        right: 12px;
-        bottom: 10px;
-        text-align: center;
-        font-size: 11px;
-        line-height: 1.2;
-        white-space: normal;
-        max-width: none;
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: none;
-    }
+  .gk-snackbar__nav {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    padding-top: 0;
+    padding-right: 0;
+  }
 
-    .gk-snackbar__icons {
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: auto;
-    }
+  .gk-snackbar__navrow {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 8px;
+    padding-top: 0;
+    padding-right: 0;
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
 
-    .gk-snackbar__icons a {
-        padding: 8px 10px;
-        font-size: 18px;
-    }
+  .gk-snackbar__more {
+    display: none;
+  }
 
-    .gk-snackbar__icons {
-        margin-top: auto;
-        margin-bottom: 10px;
-    }
+  .gk-snackbar__btn {
+    width: max-content;
+    font-size: 19.5px;
+    line-height: 1.26;
+    padding: 0;
+  }
 
-    .gk-snackbar:hover .gk-snackbar__left {
-        transform: translateY(0);
+  .gk-snackbar__icons {
+    display: flex;
+    margin-top: auto;
+    margin-bottom: 16px;
+    gap: 10px;
+
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+    will-change: opacity, transform;
+  }
+
+  .gk-snackbar[data-state="visible"][data-intro="1"] .gk-snackbar__icons {
+    animation: gkMobileIconsEnter var(--gk-popup-nav-duration) ease both;
+    animation-delay: var(--gk-popup-nav-delay);
+  }
+
+  .gk-snackbar[data-state="visible"]:not([data-intro="1"]) .gk-snackbar__icons {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .gk-popup-shell:not([data-docked="1"]) .gk-snackbar[data-state="visible"] .gk-snackbar__icons {
+    pointer-events: auto;
+  }
+
+  .gk-popup-shell[data-docked="1"] .gk-snackbar__icons {
+    opacity: 0 !important;
+    transform: translateY(6px);
+    pointer-events: none !important;
+    animation: none;
+  }
+
+  @keyframes gkMobileIconsEnter {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
     }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .gk-snackbar__icons a {
+    padding: 7px 9px;
+    font-size: 16px;
+  }
+
+  .gk-snackbar__footer {
+    display: none;
+  }
+
+  .gk-snackbar:hover .gk-snackbar__left {
+    transform: none;
+  }
 }
